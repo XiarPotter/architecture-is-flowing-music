@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+*~
+
+# 服务器临时文件
+/tmp/
+*.log
+
+# 创作手稿（个人叙事 / B-roll 提示，不公开）
+SCRIPT.md
+
+# 工作记忆（工具内部笔记，不公开）
+.workbuddy/
+
+# Python 缓存
+__pycache__/
+*.pyc
+.venv/
+venv/

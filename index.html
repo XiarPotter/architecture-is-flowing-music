@@ -1,0 +1,1815 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>建筑是流动的音乐 · 水流动试听版</title>
+  <style>
+    :root {
+      --bg: #efe8d8;              /* 米黄牛皮纸底 */
+      --bg-2: #e6dcc5;
+      --paper: #f5efe0;           /* 米白纸片 */
+      --paper-warm: #ede2c6;      /* 更暖的撕纸 */
+      --paper-cool: #d9d4c6;      /* 灰白剪报 */
+      --tape: #d7cfbb;            /* 胶带色 */
+      --panel: rgba(245, 239, 224, 0.88);
+      --panel-strong: rgba(255, 252, 244, 0.6);
+      --text: #141414;
+      --muted: #6f6a5c;
+      --line: rgba(20, 20, 20, 0.14);
+      --line-strong: rgba(20, 20, 20, 0.3);
+      --ink: rgba(20, 20, 20, 0.9);
+      --accent-dark: #22313a;     /* 深青，用于水波 / 高亮 */
+      --accent-ink: #111111;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(120, 90, 40, 0.06), transparent 40%),
+        radial-gradient(circle at 85% 100%, rgba(20, 20, 20, 0.05), transparent 45%),
+        linear-gradient(180deg, #f1ead9 0%, #e7ddc4 100%);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* 全局牛皮纸纹理：细密斜纹 + 颗粒感 */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -12% -10%;
+      pointer-events: none;
+      background:
+        repeating-linear-gradient(
+          92deg,
+          rgba(60, 40, 10, 0.03) 0,
+          rgba(60, 40, 10, 0.03) 1px,
+          transparent 1px,
+          transparent 52px
+        ),
+        repeating-linear-gradient(
+          4deg,
+          rgba(20, 20, 20, 0.018) 0,
+          rgba(20, 20, 20, 0.018) 1px,
+          transparent 1px,
+          transparent 3px
+        );
+      opacity: 0.8;
+      transform: translate3d(0, 0, 0);
+      animation: pageDrift 22s linear infinite;
+    }
+
+    @keyframes pageDrift {
+      from { transform: translate3d(0, 0, 0); }
+      to { transform: translate3d(52px, 0, 0); }
+    }
+
+    .page {
+      position: relative;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 48px 24px 72px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.18fr 0.82fr;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    .hero-main,
+    .hero-note,
+    .track,
+    .principles {
+      position: relative;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      backdrop-filter: blur(6px);
+      overflow: hidden;
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.6) inset,
+        0 14px 28px rgba(60, 40, 10, 0.06),
+        0 2px 4px rgba(60, 40, 10, 0.04);
+    }
+
+    .hero-main {
+      padding: 36px;
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      isolation: isolate;
+    }
+
+    .hero-main::after {
+      content: "";
+      position: absolute;
+      inset: auto -10% 8% -10%;
+      height: 140px;
+      background:
+        radial-gradient(closest-side, rgba(17, 17, 17, 0.12), transparent 78%),
+        linear-gradient(90deg, transparent, rgba(17, 17, 17, 0.05), transparent);
+      filter: blur(16px);
+      opacity: 0.55;
+      animation: heroCurrent 11s linear infinite;
+      z-index: -1;
+    }
+
+    @keyframes heroCurrent {
+      from { transform: translateX(-12%) scaleX(0.92); }
+      50% { transform: translateX(8%) scaleX(1.04); }
+      to { transform: translateX(28%) scaleX(0.96); }
+    }
+
+    h1 {
+      font-size: clamp(42px, 6vw, 82px);
+      line-height: 0.96;
+      letter-spacing: -0.04em;
+      margin: 0 0 20px;
+      font-weight: 700;
+      color: #141414;
+      display: inline-block;
+      position: relative;
+      padding: 6px 14px 8px;
+      background: #e8dcbe;
+      box-shadow: 0 4px 10px rgba(60, 40, 10, 0.12);
+      transform: rotate(-0.8deg);
+    }
+
+    h1::after {
+      content: "";
+      position: absolute;
+      left: -2px; right: -2px; bottom: -6px; height: 8px;
+      background: inherit;
+      clip-path: polygon(0 0, 4% 100%, 8% 0, 13% 100%, 18% 0, 23% 100%, 28% 0, 33% 100%, 38% 0, 43% 100%, 48% 0, 53% 100%, 58% 0, 63% 100%, 68% 0, 73% 100%, 78% 0, 83% 100%, 88% 0, 93% 100%, 98% 0, 100% 100%);
+    }
+
+    .eyebrow {
+      font-family: "SF Mono", "Menlo", monospace;
+      font-size: 12px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #3a2f1c;
+      margin-bottom: 18px;
+      display: inline-block;
+      padding: 3px 10px;
+      background: #e2dcc9;
+      transform: rotate(-0.6deg);
+    }
+
+    h2,
+    h3,
+    p,
+    li { margin: 0; }
+
+    .lead {
+      max-width: 720px;
+      font-size: 16px;
+      color: var(--muted);
+    }
+
+    .hero-foot {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+
+    .hint {
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 420px;
+    }
+
+    .hero-wave {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      min-width: 180px;
+      justify-content: flex-end;
+    }
+
+    .hero-wave span {
+      width: 1px;
+      height: 24px;
+      background: rgba(17, 17, 17, 0.2);
+      animation: barMove 2.2s ease-in-out infinite;
+      transform-origin: center bottom;
+    }
+
+    .hero-wave span:nth-child(2) { animation-delay: .15s; }
+    .hero-wave span:nth-child(3) { animation-delay: .3s; }
+    .hero-wave span:nth-child(4) { animation-delay: .45s; }
+    .hero-wave span:nth-child(5) { animation-delay: .6s; }
+    .hero-wave span:nth-child(6) { animation-delay: .75s; }
+    .hero-wave span:nth-child(7) { animation-delay: .9s; }
+
+    @keyframes barMove {
+      0%, 100% { transform: scaleY(0.4); opacity: 0.28; }
+      50% { transform: scaleY(1.45); opacity: 0.9; }
+    }
+
+    .hero-note {
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      border: 1px solid var(--line);
+      background: var(--line);
+    }
+
+    .mini-grid div {
+      background: rgba(255, 255, 255, 0.42);
+      padding: 14px 12px;
+      min-height: 84px;
+      font-size: 13px;
+    }
+
+    .mini-grid strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .principles {
+      margin-bottom: 18px;
+      padding: 22px 24px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--line);
+    }
+
+    .principles > div {
+      background: var(--panel-strong);
+      padding: 18px 16px;
+      min-height: 126px;
+    }
+
+    .principles h3 {
+      font-size: 14px;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .principles p { color: var(--muted); font-size: 14px; }
+
+    .tracks {
+      display: grid;
+      gap: 18px;
+    }
+
+    .track {
+      display: grid;
+      grid-template-columns: 42% 1fr;
+      gap: 0;
+      transition: border-color .35s ease, transform .35s ease, box-shadow .35s ease;
+    }
+
+    .track.is-playing {
+      border-color: rgba(17, 17, 17, 0.22);
+      box-shadow: 0 14px 32px rgba(17, 17, 17, 0.05);
+      transform: translateY(-2px);
+    }
+
+    .track-aspect {
+      position: relative;
+      min-height: 560px;
+      border-right: 1px solid var(--line);
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(245, 239, 224, 0.4), rgba(217, 212, 198, 0.35)),
+        linear-gradient(135deg, rgba(20, 20, 20, 0.04), rgba(20, 20, 20, 0));
+    }
+
+    .photo {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(1) contrast(1.05) brightness(0.98);
+      opacity: 0.82;
+      transition: opacity .5s ease, filter .5s ease, transform .6s ease;
+      z-index: 0;
+    }
+
+    .track.is-playing .photo {
+      opacity: 0.96;
+      filter: grayscale(0.85) contrast(1.08) brightness(1);
+      transform: scale(1.02);
+    }
+
+    .photo-mask {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, rgba(244, 241, 235, 0.22) 0%, rgba(244, 241, 235, 0) 40%, rgba(244, 241, 235, 0.15) 100%),
+        radial-gradient(120% 80% at 50% 50%, rgba(244, 241, 235, 0) 55%, rgba(244, 241, 235, 0.55) 100%);
+    }
+
+    .flow-canvas {
+      z-index: 2;
+    }
+
+    .water-overlay {
+      z-index: 2;
+    }
+
+    .shape-wrap {
+      z-index: 3;
+    }
+
+    .status-dot {
+      z-index: 4;
+    }
+
+    .flow-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.9;
+    }
+
+    .water-overlay,
+    .water-overlay::before,
+    .water-overlay::after {
+      position: absolute;
+      inset: auto -12% 0 -12%;
+      height: 42%;
+      content: "";
+      pointer-events: none;
+      background:
+        radial-gradient(100% 70% at 50% 100%, rgba(17, 17, 17, 0.09), transparent 70%),
+        linear-gradient(180deg, transparent 0%, rgba(17, 17, 17, 0.02) 100%);
+      mix-blend-mode: multiply;
+      opacity: 0.18;
+      transform: translate3d(0, 0, 0);
+    }
+
+    .water-overlay::before {
+      height: 56%;
+      opacity: 0.2;
+      animation: tide 9s ease-in-out infinite;
+    }
+
+    .water-overlay::after {
+      height: 48%;
+      opacity: 0.14;
+      animation: tide 13s ease-in-out infinite reverse;
+    }
+
+    .track.is-playing .water-overlay,
+    .track.is-playing .water-overlay::before,
+    .track.is-playing .water-overlay::after {
+      opacity: 0.28;
+    }
+
+    @keyframes tide {
+      0%, 100% { transform: translateX(-2%) scaleX(1); }
+      50% { transform: translateX(4%) scaleX(1.04); }
+    }
+
+    .shape-wrap {
+      position: absolute;
+      inset: 20px;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+      opacity: 0.18;
+      mix-blend-mode: multiply;
+      transition: opacity .4s ease;
+    }
+
+    .track.is-playing .shape-wrap {
+      opacity: 0.32;
+    }
+
+    .shape {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border: 1px solid rgba(17, 17, 17, 0.45);
+      overflow: hidden;
+      background: transparent;
+    }
+
+    .shape::before,
+    .shape::after {
+      content: "";
+      position: absolute;
+      border-color: var(--ink);
+    }
+
+    .shape.pei::before {
+      left: 10%; right: 10%; top: 58%; height: 0;
+      border-top: 6px solid var(--ink);
+      transform: skewX(-18deg);
+    }
+
+    .shape.pei::after {
+      width: 42%; height: 42%; left: 29%; top: 16%;
+      border: 6px solid var(--ink);
+      clip-path: polygon(0 100%, 50% 18%, 100% 100%, 82% 100%, 50% 44%, 18% 100%);
+    }
+
+    .shape.mondrian {
+      background-image:
+        linear-gradient(to right, transparent 0 24%, var(--ink) 24% 26%, transparent 26% 53%, var(--ink) 53% 55%, transparent 55% 74%, var(--ink) 74% 76%, transparent 76% 100%),
+        linear-gradient(to bottom, transparent 0 20%, var(--ink) 20% 22%, transparent 22% 46%, var(--ink) 46% 48%, transparent 48% 73%, var(--ink) 73% 75%, transparent 75% 100%);
+    }
+
+    .shape.mondrian::before {
+      left: 24%; top: 22%; width: 29%; height: 24%; background: var(--ink); border: none;
+    }
+
+    .shape.mondrian::after {
+      left: 55%; top: 48%; width: 21%; height: 25%; background: rgba(17, 17, 17, 0.18); border: none;
+    }
+
+    .shape.aranya::before {
+      left: 28%; right: 28%; bottom: 8%; height: 74%;
+      border-left: 6px solid var(--ink);
+      border-right: 6px solid var(--ink);
+      transform: skewX(-16deg);
+      clip-path: polygon(50% 0, 100% 100%, 0 100%);
+    }
+
+    .shape.aranya::after {
+      left: 40%; right: 40%; bottom: 20%; height: 16%;
+      border-top: 6px solid var(--ink);
+    }
+
+    /* MAD 有机曲面：顶部伞盖 + 向下收束的柱茎 */
+    .shape.mad::before {
+      left: 8%; right: 8%; top: 14%; height: 34%;
+      border-top: 6px solid var(--ink);
+      border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+      border-left: 6px solid var(--ink);
+      border-right: 6px solid var(--ink);
+      background: transparent;
+    }
+
+    .shape.mad::after {
+      left: 46%; right: 46%; top: 38%; bottom: 8%;
+      border-left: 6px solid var(--ink);
+      border-right: 6px solid var(--ink);
+      clip-path: polygon(0 0, 100% 0, 75% 100%, 25% 100%);
+      background: transparent;
+    }
+    .status-dot {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(17, 17, 17, 0.14);
+      box-shadow: 0 0 0 0 rgba(17, 17, 17, 0.2);
+      transition: background .3s ease;
+    }
+
+    .track.is-playing .status-dot {
+      background: rgba(17, 17, 17, 0.86);
+      animation: pulse 1.6s ease-out infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(17, 17, 17, 0.2); }
+      70% { box-shadow: 0 0 0 14px rgba(17, 17, 17, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(17, 17, 17, 0); }
+    }
+
+    .track-copy {
+      padding: 32px 34px 30px;
+      display: grid;
+      gap: 16px;
+      background:
+        linear-gradient(180deg, rgba(255, 251, 240, 0.55) 0%, rgba(245, 239, 224, 0.3) 100%);
+      position: relative;
+    }
+
+    /* 右上角装饰：一小段胶带 */
+    .track-copy::before {
+      content: "";
+      position: absolute;
+      top: -10px;
+      right: 40px;
+      width: 74px;
+      height: 22px;
+      background: rgba(215, 207, 187, 0.82);
+      border-left: 1px dashed rgba(120, 100, 60, 0.35);
+      border-right: 1px dashed rgba(120, 100, 60, 0.35);
+      transform: rotate(-4deg);
+      box-shadow: 0 2px 6px rgba(60, 40, 10, 0.08);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .track-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    /* TRACK 0X 的小标签：撕纸黄色卡片 */
+    .track-eyebrow {
+      display: inline-block;
+      font-family: "SF Mono", "Menlo", "Courier New", monospace;
+      font-size: 12px;
+      letter-spacing: 0.22em;
+      color: #3a2f1c;
+      background: #e8dcbe;
+      padding: 4px 12px 3px;
+      margin-bottom: 10px;
+      transform: rotate(-1deg);
+      box-shadow: 0 2px 4px rgba(60, 40, 10, 0.08);
+      position: relative;
+    }
+
+    .track-eyebrow::after {
+      content: "";
+      position: absolute;
+      left: -3px; right: -3px; top: 100%;
+      height: 4px;
+      background: inherit;
+      clip-path: polygon(0 0, 4% 100%, 9% 0, 16% 100%, 22% 0, 28% 100%, 35% 0, 41% 100%, 48% 0, 55% 100%, 62% 0, 69% 100%, 76% 0, 83% 100%, 90% 0, 97% 100%, 100% 0);
+      opacity: 0.65;
+    }
+
+    /* 标题行：黑体中文 · 英文副标题 */
+    .track-title {
+      margin: 0;
+      font-size: 34px;
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+      font-weight: 700;
+      color: #111;
+      display: inline-block;
+      position: relative;
+    }
+
+    .track-title::before {
+      content: "";
+      position: absolute;
+      left: -8px; right: -8px; top: -4px; bottom: -4px;
+      background: rgba(245, 239, 224, 0.5);
+      z-index: -1;
+      transform: rotate(-0.6deg);
+    }
+
+    .track-title .sep {
+      font-weight: 400;
+      color: #6f6a5c;
+      padding: 0 6px;
+    }
+
+    .track-title .en {
+      font-weight: 500;
+      font-size: 22px;
+      letter-spacing: -0.01em;
+      color: #2a2a2a;
+      font-family: "Georgia", "Inter", serif;
+    }
+
+    .badge,
+    .play-state {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border: 1px solid var(--line-strong);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #3a2f1c;
+      background: #eadfbf;
+      font-family: "SF Mono", "Menlo", monospace;
+      transform: rotate(0.6deg);
+    }
+
+    .play-state[data-live="true"] {
+      color: #fff;
+      background: #141414;
+      border-color: #141414;
+    }
+
+    /* 关键词拼贴行 */
+    .poem-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 14px;
+      align-items: center;
+      padding: 8px 0 6px;
+    }
+
+    .poem-grid .word {
+      display: inline-block;
+      font-family: "Songti SC", "Noto Serif SC", "Georgia", serif;
+      color: #141414;
+      padding: 4px 12px;
+      position: relative;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      line-height: 1.2;
+      will-change: transform;
+      cursor: default;
+      transition: transform .35s cubic-bezier(.2, .8, .2, 1), box-shadow .35s ease;
+    }
+
+    /* —— idle 浮动动效：每个纸片用不同延迟轻微摇摆 —— */
+    .poem-grid .word {
+      animation: paperFloat 6s ease-in-out infinite;
+    }
+    .poem-grid .word:nth-child(1) { animation-delay: 0s; }
+    .poem-grid .word:nth-child(2) { animation-delay: .9s; }
+    .poem-grid .word:nth-child(3) { animation-delay: 1.7s; }
+    .poem-grid .word:nth-child(4) { animation-delay: 2.3s; }
+    .poem-grid .word:nth-child(5) { animation-delay: 3.1s; }
+    .poem-grid .word:nth-child(6) { animation-delay: 3.8s; }
+    .poem-grid .word:nth-child(7) { animation-delay: 4.5s; }
+    .poem-grid .word:nth-child(8) { animation-delay: 5.2s; }
+
+    @keyframes paperFloat {
+      0%, 100% {
+        transform: translateY(0) rotate(var(--rot, 0deg));
+      }
+      50% {
+        transform: translateY(-3px) rotate(calc(var(--rot, 0deg) + 0.8deg));
+      }
+    }
+
+    /* hover 放大 + 抬起 */
+    .poem-grid .word:hover {
+      transform: translateY(-5px) rotate(var(--rot, 0deg)) scale(1.08) !important;
+      animation-play-state: paused;
+      box-shadow: 0 8px 18px rgba(20, 50, 70, 0.18) !important;
+      z-index: 5;
+    }
+
+    /* 播放态下：整片关键词轻微放大 + 动效更活跃 */
+    .track.is-playing .poem-grid .word {
+      animation-duration: 3.2s;
+    }
+    .track.is-playing .poem-grid .word-1,
+    .track.is-playing .poem-grid .word-4 {
+      animation-name: paperPulse;
+    }
+
+    @keyframes paperPulse {
+      0%, 100% {
+        transform: translateY(0) rotate(var(--rot, 0deg)) scale(1);
+      }
+      50% {
+        transform: translateY(-4px) rotate(calc(var(--rot, 0deg) - 1deg)) scale(1.05);
+      }
+    }
+
+    /* —— 关键词纸片七种变体 —— */
+
+    /* 主关键词：米黄大片 + 撕边 */
+    .poem-grid .word-1 {
+      --rot: -3deg;
+      background: #e8dcbe;
+      padding: 6px 14px 5px;
+      box-shadow: 0 3px 8px rgba(60, 40, 10, 0.12);
+      font-size: 24px;
+      transform: rotate(var(--rot));
+    }
+    .poem-grid .word-1::before {
+      content: "";
+      position: absolute; left: 0; right: 0; bottom: -3px; height: 4px;
+      background: inherit;
+      clip-path: polygon(0 0, 6% 100%, 14% 0, 22% 100%, 30% 0, 38% 100%, 46% 0, 54% 100%, 62% 0, 70% 100%, 78% 0, 86% 100%, 94% 0, 100% 100%, 100% 0);
+    }
+
+    /* 次级：浅灰白剪报 */
+    .poem-grid .word-2 {
+      --rot: 2.2deg;
+      background: #e2dcc9;
+      padding: 4px 12px;
+      font-size: 20px;
+      font-weight: 500;
+      box-shadow: 0 2px 5px rgba(60, 40, 10, 0.09);
+      transform: rotate(var(--rot));
+    }
+
+    /* 斜体衬线：像手写笔记 */
+    .poem-grid .word-3 {
+      --rot: -1.5deg;
+      font-family: "Georgia", "Songti SC", serif;
+      font-style: italic;
+      font-weight: 500;
+      font-size: 22px;
+      padding: 2px 4px;
+      background: transparent;
+      color: #3a2f1c;
+      border-bottom: 1px solid rgba(20, 20, 20, 0.35);
+      transform: rotate(var(--rot));
+    }
+
+    /* 黑底白字小标签 */
+    .poem-grid .word-4 {
+      --rot: 3deg;
+      background: #141414;
+      color: #fff;
+      font-family: -apple-system, "PingFang SC", sans-serif;
+      font-weight: 600;
+      font-size: 18px;
+      padding: 4px 12px;
+      letter-spacing: 0.02em;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.22);
+      transform: rotate(var(--rot));
+    }
+
+    /* 下划线型 */
+    .poem-grid .word-5 {
+      --rot: -2.2deg;
+      font-size: 20px;
+      padding: 2px 4px;
+      background: transparent;
+      border-bottom: 3px solid #141414;
+      transform: rotate(var(--rot));
+    }
+
+    /* 深青蓝纸片（demo 新增） */
+    .poem-grid .word-6 {
+      --rot: 2.5deg;
+      background: #2b3e4c;
+      color: #f5efe0;
+      font-family: -apple-system, "PingFang SC", "Songti SC", sans-serif;
+      font-weight: 500;
+      font-size: 19px;
+      padding: 4px 12px;
+      letter-spacing: 0.04em;
+      box-shadow: 0 3px 7px rgba(20, 50, 70, 0.25);
+      transform: rotate(var(--rot));
+    }
+
+    /* 浅水蓝纸片（demo 新增） */
+    .poem-grid .word-7 {
+      --rot: -2.8deg;
+      background: #b8cdd6;
+      color: #1f3440;
+      font-family: "Songti SC", "Noto Serif SC", serif;
+      font-weight: 600;
+      font-size: 20px;
+      padding: 4px 12px;
+      box-shadow: 0 2px 6px rgba(20, 50, 70, 0.18);
+      transform: rotate(var(--rot));
+    }
+
+    /* 小号关键词分组（底部收束） */
+    .poem-grid.small .word {
+      font-size: 16px;
+      padding: 3px 10px;
+    }
+    .poem-grid.small .word-1 { font-size: 18px; padding: 4px 12px; }
+    .poem-grid.small .word-3 { font-size: 17px; }
+    .poem-grid.small .word-6 { font-size: 16px; }
+    .poem-grid.small .word-7 { font-size: 16px; }
+
+    /* 英文副标题大字（像 demo 里的"回声中的水"那一行） */
+    .line-poem {
+      font-family: "Songti SC", "Noto Serif SC", "Georgia", serif;
+      font-size: 30px;
+      font-weight: 600;
+      color: #141414;
+      padding: 10px 0 4px;
+      letter-spacing: 0.04em;
+      line-height: 1.2;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px 8px;
+    }
+
+    .line-poem .phrase {
+      background: #ede2c6;
+      padding: 2px 10px;
+      transform: rotate(-0.6deg);
+      box-shadow: 0 2px 4px rgba(60, 40, 10, 0.08);
+    }
+
+    .line-poem .mark {
+      font-family: "Georgia", serif;
+      font-size: 40px;
+      color: #3a2f1c;
+      transform: translateY(6px) rotate(2deg);
+      padding: 0 4px;
+    }
+
+    .controls-row {
+      display: grid;
+      gap: 10px;
+    }
+
+    audio {
+      width: 100%;
+      height: 42px;
+      filter: grayscale(1) contrast(1.06);
+      display: none; /* 用自定义水面播放器替代 */
+    }
+
+    /* 水面进度条：拼贴版大波形 */
+    .wave-player {
+      position: relative;
+      padding: 18px 4px 14px;
+      background: transparent;
+      border: none;
+      overflow: visible;
+      min-height: 210px;
+    }
+
+    /* 巨型水纹 canvas 铺在播放器背后 */
+    .big-wave-canvas {
+      position: absolute;
+      left: -10px;
+      right: -10px;
+      top: 0;
+      bottom: 0;
+      width: calc(100% + 20px);
+      height: 100%;
+      display: block;
+      pointer-events: none;
+      z-index: 0;
+      filter: drop-shadow(0 6px 10px rgba(20, 50, 70, 0.18));
+    }
+
+    .wave-player::before { display: none; }
+
+    /* 播放控件浮在波形之上 */
+    .wave-controls {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-top: 82px;
+      padding: 0 8px;
+    }
+
+    .wave-controls .left,
+    .wave-controls .right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .wave-controls .right { justify-content: flex-end; }
+
+    .wave-progress {
+      position: relative;
+      flex: 1;
+      height: 2px;
+      background: rgba(255, 252, 244, 0.6);
+      cursor: pointer;
+      z-index: 2;
+      align-self: center;
+    }
+
+    .wave-progress .played {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      background: #141414;
+      width: 0%;
+      transition: width .08s linear;
+    }
+
+    .wave-progress .playhead {
+      position: absolute;
+      top: 50%;
+      width: 10px;
+      height: 10px;
+      background: #141414;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      left: 0;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), 0 0 0 3px rgba(255, 252, 244, 0.7);
+      transition: left .08s linear;
+    }
+
+    .play-btn {
+      width: 44px;
+      height: 44px;
+      border: 1px solid rgba(20, 20, 20, 0.6);
+      background: rgba(255, 252, 244, 0.85);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
+      color: #141414;
+      transition: background .25s ease, transform .2s ease;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 3px 8px rgba(20, 50, 70, 0.2);
+    }
+
+    .play-btn:hover { background: #fff; }
+    .play-btn:active { transform: scale(0.95); }
+
+    .play-btn .icon-play,
+    .play-btn .icon-pause {
+      width: 0;
+      height: 0;
+      display: block;
+    }
+
+    .play-btn .icon-play {
+      border-top: 7px solid transparent;
+      border-bottom: 7px solid transparent;
+      border-left: 10px solid #141414;
+      margin-left: 3px;
+    }
+
+    .play-btn .icon-pause {
+      width: 10px;
+      height: 13px;
+      border-left: 3px solid #141414;
+      border-right: 3px solid #141414;
+    }
+
+    .track.is-playing .play-btn .icon-play { display: none; }
+    .track:not(.is-playing) .play-btn .icon-pause { display: none; }
+
+    .time {
+      font-family: "SF Mono", "Menlo", "Courier New", monospace;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      color: #141414;
+      min-width: 38px;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      background: rgba(255, 252, 244, 0.75);
+      padding: 2px 6px;
+    }
+
+    .time.time-total { color: #3a2f1c; }
+
+    .wave-progress .seek-hint {
+      position: absolute;
+      top: -28px;
+      width: 1px;
+      height: 10px;
+      background: rgba(20, 20, 20, 0.5);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .15s ease;
+      transform: translateX(-0.5px);
+      z-index: 3;
+    }
+
+    .wave-progress .seek-hint::before {
+      content: attr(data-time);
+      position: absolute;
+      top: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: "SF Mono", "Menlo", "Courier New", monospace;
+      font-size: 10px;
+      color: #111;
+      background: rgba(255, 255, 255, 0.85);
+      padding: 1px 5px;
+      border: 1px solid rgba(17, 17, 17, 0.15);
+      white-space: nowrap;
+    }
+
+    .wave-progress:hover .seek-hint {
+      opacity: 1;
+    }
+
+    .foot {
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    ul { padding-left: 18px; color: var(--muted); }
+
+    .reason {
+      margin-top: 6px;
+      padding: 18px 20px 18px 22px;
+      border-left: 3px solid rgba(20, 20, 20, 0.5);
+      background:
+        linear-gradient(180deg, rgba(255, 252, 244, 0.5), rgba(245, 239, 224, 0.3));
+      font-family: "Songti SC", "Noto Serif SC", "Georgia", serif;
+      font-size: 15px;
+      line-height: 1.9;
+      color: #2b2b2b;
+      letter-spacing: 0.01em;
+      position: relative;
+      box-shadow: inset 0 0 0 1px rgba(60, 40, 10, 0.04);
+    }
+
+    .reason::before {
+      content: "为什么是这段声音";
+      position: absolute;
+      top: -10px;
+      left: 14px;
+      padding: 1px 10px;
+      font-family: -apple-system, "PingFang SC", sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: #3a2f1c;
+      background: #e8dcbe;
+      text-transform: uppercase;
+      transform: rotate(-1deg);
+      box-shadow: 0 2px 4px rgba(60, 40, 10, 0.08);
+    }
+
+    .reason em {
+      font-style: normal;
+      color: #111;
+      background: rgba(232, 220, 190, 0.9);
+      padding: 0 4px;
+    }
+
+    .flow-caption {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-family: "Songti SC", "Noto Serif SC", "Georgia", serif;
+      font-style: italic;
+      font-size: 13px;
+      color: #6f6a5c;
+      letter-spacing: 0.02em;
+      padding-top: 2px;
+    }
+
+    @media (max-width: 980px) {
+      .hero { grid-template-columns: 1fr; }
+      .principles { grid-template-columns: 1fr; }
+      .track { grid-template-columns: 1fr; }
+      .track-aspect { min-height: 220px; border-right: none; border-bottom: 1px solid var(--line); }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div class="hero-main">
+        <div>
+          <div class="eyebrow">ARCHITECTURE × SOUND · WATER MOTION STUDY</div>
+          <h1>让声音像水一样，在建筑里流动</h1>
+          <p class="lead">你想加“水流动”的 UI，我建议不要做蓝色、拟物、太海洋化的效果，而是做成一种更克制的 <strong>建筑式水纹</strong>：黑白、细线、缓慢、带回响，像声音在纸面和空间里被轻轻推开。</p>
+        </div>
+        <div class="hero-foot">
+          <p class="hint">现在这版原型里：点击任意一段 BGM 播放时，左侧会出现随声音起伏的流线、水纹与涟漪。不同建筑，水流的密度、速度和回响都不一样。</p>
+          <div class="hero-wave" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+
+      <aside class="hero-note">
+        <div>
+          <div class="eyebrow">交互语义</div>
+          <p>水流动效果不是装饰，而是<strong>“声音被空间传导”</strong>的可视化。它应该表达的是：秩序、回声、留白、脉冲、呼吸，而不是炫目的特效。</p>
+        </div>
+        <div class="mini-grid">
+          <div>
+            <strong>几何型建筑</strong>
+            水纹更平直、更克制，像镜面上的轻微波动。
+          </div>
+          <div>
+            <strong>网格型建筑</strong>
+            水流更快、更碎，像被分割后的城市脉冲。
+          </div>
+          <div>
+            <strong>礼堂型建筑</strong>
+            水波更慢、更大、更有回响，像晨雾里扩散的钟声。
+          </div>
+          <div>
+            <strong>有机型建筑</strong>
+            水面极慢地一推一收，像一个人在你身旁深呼吸。
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="principles">
+      <div>
+        <h3>01. 黑白而不是蓝色</h3>
+        <p>保留项目的高级感。水感来自线条、透明度、回声和流动节奏，而不是依赖颜色暗示。</p>
+      </div>
+      <div>
+        <h3>02. 播放才苏醒</h3>
+        <p>静止时只保留轻微水纹；按下播放后，流线抬升、涟漪扩散、状态点跳动，形成“被唤醒”的反馈。</p>
+      </div>
+      <div>
+        <h3>03. 建筑决定水的性格</h3>
+        <p>同样是水，每种建筑都有不同流速、波幅和回声距离，这样视觉语言会和声音人格真正绑定。</p>
+      </div>
+    </section>
+
+    <section class="tracks">
+      <article class="track" data-theme="pei" data-speed="0.0007" data-amplitude="6" data-density="10" data-ripple="2200">
+        <div class="track-aspect">
+          <img class="photo" src="./images/01-pei.jpg" alt="贝聿铭风格几何建筑原图" />
+          <div class="photo-mask"></div>
+          <canvas class="flow-canvas"></canvas>
+          <div class="water-overlay"></div>
+          <div class="shape-wrap"><div class="shape pei"></div></div>
+          <div class="status-dot"></div>
+        </div>
+        <div class="track-copy">
+          <div class="track-head">
+            <div>
+              <span class="track-eyebrow">TRACK 01</span>
+              <h2 class="track-title">几何白墙<span class="sep">·</span><span class="en">Geometric Minimal</span></h2>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+              <span class="badge">24 sec · minimal</span>
+              <span class="play-state" data-live="false">water idle</span>
+            </div>
+          </div>
+          <div class="poem-grid">
+            <span class="word word-1">折线</span>
+            <span class="word word-2">秩序</span>
+            <span class="word word-3">镜像</span>
+            <span class="word word-4">留白</span>
+            <span class="word word-5">屏息</span>
+            <span class="word word-6">低光</span>
+            <span class="word word-7">对称</span>
+          </div>
+          <div class="line-poem">
+            <span class="phrase">白墙上的反光</span>
+            <span class="mark">,</span>
+          </div>
+          <p>这里的水纹应该像白墙上的反光，不要太"水"。所以我让它只在播放时微微抬起，用更平整的流线和更慢的扩散节奏，强调几何秩序感。</p>
+          <div class="controls-row">
+            <div class="wave-player">
+              <canvas class="big-wave-canvas"></canvas>
+              <div class="wave-controls">
+                <div class="left">
+                  <button class="play-btn" type="button" aria-label="播放/暂停">
+                    <span class="icon-play"></span><span class="icon-pause"></span>
+                  </button>
+                  <span class="time time-current">0:00</span>
+                </div>
+                <div class="wave-progress">
+                  <div class="played"></div>
+                  <div class="playhead"></div>
+                  <span class="seek-hint" data-time="0:00"></span>
+                </div>
+                <div class="right">
+                  <span class="time time-total">0:00</span>
+                </div>
+              </div>
+            </div>
+            <audio preload="metadata" src="./output/01-pei-geometric-minimal.wav"></audio>
+            <div class="poem-grid small" style="justify-content:flex-end;">
+              <span class="word word-1">清晨的墙</span>
+              <span class="word word-3">空气</span>
+              <span class="word word-6">光影斜切</span>
+              <span class="word word-5">几何秩序</span>
+            </div>
+          </div>
+          <div class="reason">
+            它太干净了，干净到你不敢大声说话。<br/>
+            于是我没有让音乐"响起来"，而是让它像一束光斜斜地落在墙上——只有几个点，剩下全是<em>空气</em>。波纹平得像镜面，不是因为安静，是因为这栋建筑<em>本来就在屏息</em>。
+          </div>
+        </div>
+      </article>
+
+      <article class="track" data-theme="mondrian" data-speed="0.00135" data-amplitude="10" data-density="13" data-ripple="1400">
+        <div class="track-aspect">
+          <img class="photo" src="./images/02-mondrian.jpg" alt="蒙德里安风格几何色彩建筑原图" />
+          <div class="photo-mask"></div>
+          <canvas class="flow-canvas"></canvas>
+          <div class="water-overlay"></div>
+          <div class="shape-wrap"><div class="shape mondrian"></div></div>
+          <div class="status-dot"></div>
+        </div>
+        <div class="track-copy">
+          <div class="track-head">
+            <div>
+              <span class="track-eyebrow">TRACK 02</span>
+              <h2 class="track-title">色块网格<span class="sep">·</span><span class="en">Urban Grid Pulse</span></h2>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+              <span class="badge">22 sec · rhythmic</span>
+              <span class="play-state" data-live="false">water idle</span>
+            </div>
+          </div>
+          <div class="poem-grid">
+            <span class="word word-1">网格</span>
+            <span class="word word-2">色块</span>
+            <span class="word word-3">街头</span>
+            <span class="word word-4">切分</span>
+            <span class="word word-5">脉冲</span>
+            <span class="word word-6">霓虹</span>
+            <span class="word word-7">交错</span>
+          </div>
+          <div class="line-poem">
+            <span class="phrase">被切开的街头节拍</span>
+            <span class="mark">,</span>
+          </div>
+          <p>这类建筑不适合柔软的水面，更像被街道、窗格和节拍切开的脉冲流体。所以水纹更密、更快，涟漪触发也更频繁，像城市路口的节奏回声。</p>
+          <div class="controls-row">
+            <div class="wave-player">
+              <canvas class="big-wave-canvas"></canvas>
+              <div class="wave-controls">
+                <div class="left">
+                  <button class="play-btn" type="button" aria-label="播放/暂停">
+                    <span class="icon-play"></span><span class="icon-pause"></span>
+                  </button>
+                  <span class="time time-current">0:00</span>
+                </div>
+                <div class="wave-progress">
+                  <div class="played"></div>
+                  <div class="playhead"></div>
+                  <span class="seek-hint" data-time="0:00"></span>
+                </div>
+                <div class="right">
+                  <span class="time time-total">0:00</span>
+                </div>
+              </div>
+            </div>
+            <audio preload="metadata" src="./output/02-mondrian-urban-grid.wav"></audio>
+            <div class="poem-grid small" style="justify-content:flex-end;">
+              <span class="word word-1">下午四点</span>
+              <span class="word word-3">路口</span>
+              <span class="word word-5">都市心跳</span>
+              <span class="word word-6">斑马线</span>
+            </div>
+          </div>
+          <div class="reason">
+            它不是一栋建筑，它是<em>一段被切开的街头节拍</em>。<br/>
+            红黄蓝堆在一起，像某个下午四点钟的路口——有人在按喇叭，有人在过马路，有人在抬头看这面突然跳出来的墙。所以我让音乐变密、变碎、变快，像心跳，也像都市里那种<em>藏不住的兴奋</em>。
+          </div>
+        </div>
+      </article>
+
+      <article class="track" data-theme="aranya" data-speed="0.00055" data-amplitude="14" data-density="9" data-ripple="2600">
+        <div class="track-aspect">
+          <img class="photo" src="./images/03-aranya.jpg" alt="阿那亚礼堂清晨原图" />
+          <div class="photo-mask"></div>
+          <canvas class="flow-canvas"></canvas>
+          <div class="water-overlay"></div>
+          <div class="shape-wrap"><div class="shape aranya"></div></div>
+          <div class="status-dot"></div>
+        </div>
+        <div class="track-copy">
+          <div class="track-head">
+            <div>
+              <span class="track-eyebrow">TRACK 03</span>
+              <h2 class="track-title">黎明礼堂<span class="sep">·</span><span class="en">Dawn Chapel Ambient</span></h2>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+              <span class="badge">28 sec · ambient</span>
+              <span class="play-state" data-live="false">water idle</span>
+            </div>
+          </div>
+          <div class="poem-grid">
+            <span class="word word-1">尖顶</span>
+            <span class="word word-2">台阶</span>
+            <span class="word word-3">海边</span>
+            <span class="word word-4">孤独</span>
+            <span class="word word-5">浪漫</span>
+            <span class="word word-6">晨雾</span>
+            <span class="word word-7">钟声</span>
+          </div>
+          <div class="poem-grid" style="gap:10px 12px;">
+            <span class="word word-2">慢波</span>
+            <span class="word word-7">长尾回响</span>
+            <span class="word word-2">大范围扩散</span>
+          </div>
+          <div class="line-poem">
+            <span class="phrase">回声中的水</span>
+            <span class="mark">,</span>
+          </div>
+          <p>这段最适合做成"回声中的水"。播放时，水流并不快，但每一层波线都更深、更长，像钟声在晨雾和海风里慢慢散开。</p>
+          <div class="controls-row">
+            <div class="wave-player">
+              <canvas class="big-wave-canvas"></canvas>
+              <div class="wave-controls">
+                <div class="left">
+                  <button class="play-btn" type="button" aria-label="播放/暂停">
+                    <span class="icon-play"></span><span class="icon-pause"></span>
+                  </button>
+                  <span class="time time-current">0:00</span>
+                </div>
+                <div class="wave-progress">
+                  <div class="played"></div>
+                  <div class="playhead"></div>
+                  <span class="seek-hint" data-time="0:00"></span>
+                </div>
+                <div class="right">
+                  <span class="time time-total">0:00</span>
+                </div>
+              </div>
+            </div>
+            <audio preload="metadata" src="./output/03-aranya-dawn-chapel.wav"></audio>
+            <div class="poem-grid small" style="justify-content:flex-end;">
+              <span class="word word-1">清晨五点</span>
+              <span class="word word-3">留白</span>
+              <span class="word word-3">上行</span>
+              <span class="word word-6">回响空间</span>
+              <span class="word word-5">海风</span>
+            </div>
+          </div>
+          <div class="reason">
+            清晨五点的海边，连风都是慢的。<br/>
+            礼堂的尖顶往上走，像在替还没醒来的人<em>先问一句天</em>。所以这段声音我不敢写得太满——留很多空，让每一个音走出去以后再走回来，像一个人独自站在台阶上，听见<em>自己的回声</em>，然后意识到海在更远的地方。
+          </div>
+        </div>
+      </article>
+
+      <article class="track" data-theme="mad" data-speed="0.00045" data-amplitude="16" data-density="8" data-ripple="3000">
+        <div class="track-aspect">
+          <img class="photo" src="./images/04-mad.jpg" alt="MAD 有机曲面建筑鸟瞰原图" />
+          <div class="photo-mask"></div>
+          <canvas class="flow-canvas"></canvas>
+          <div class="water-overlay"></div>
+          <div class="shape-wrap"><div class="shape mad"></div></div>
+          <div class="status-dot"></div>
+        </div>
+        <div class="track-copy">
+          <div class="track-head">
+            <div>
+              <span class="track-eyebrow">TRACK 04</span>
+              <h2 class="track-title">有机曲面<span class="sep">·</span><span class="en">Organic Flow</span></h2>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+              <span class="badge">32 sec · organic</span>
+              <span class="play-state" data-live="false">water idle</span>
+            </div>
+          </div>
+          <div class="poem-grid">
+            <span class="word word-1">伞盖</span>
+            <span class="word word-2">生长</span>
+            <span class="word word-3">放射</span>
+            <span class="word word-4">呼吸</span>
+            <span class="word word-5">鸟瞰</span>
+            <span class="word word-6">无直角</span>
+            <span class="word word-7">慢绽放</span>
+          </div>
+          <div class="line-poem">
+            <span class="phrase">正在打开的手</span>
+            <span class="mark">,</span>
+          </div>
+          <p>这是一栋"没有直角"的建筑。音乐里也没有切分节奏，只有一个持续的中央主音，像建筑的粗柱；其他音符从它身上向外辐射、扩散，像一把伞在鸟瞰里慢慢打开。</p>
+          <div class="controls-row">
+            <div class="wave-player">
+              <canvas class="big-wave-canvas"></canvas>
+              <div class="wave-controls">
+                <div class="left">
+                  <button class="play-btn" type="button" aria-label="播放/暂停">
+                    <span class="icon-play"></span><span class="icon-pause"></span>
+                  </button>
+                  <span class="time time-current">0:00</span>
+                </div>
+                <div class="wave-progress">
+                  <div class="played"></div>
+                  <div class="playhead"></div>
+                  <span class="seek-hint" data-time="0:00"></span>
+                </div>
+                <div class="right">
+                  <span class="time time-total">0:00</span>
+                </div>
+              </div>
+            </div>
+            <audio preload="metadata" src="./output/04-mad-organic-flow.wav"></audio>
+            <div class="poem-grid small" style="justify-content:flex-end;">
+              <span class="word word-1">一次打开</span>
+              <span class="word word-3">远处</span>
+              <span class="word word-6">呼吸变慢</span>
+              <span class="word word-7">骨头</span>
+            </div>
+          </div>
+          <div class="reason">
+            你从高空往下看这栋楼，它不像一个建筑，更像一只<em>正在慢慢张开的手</em>。<br/>
+            所以这段声音我没写旋律，只写了一次"打开"——中间有一根音一直不走，像建筑的骨头；其他音从它身上一点点冒出来，去到远处，又被风慢慢送回。你会发现自己的呼吸也变慢了，那是<em>它替你做的事</em>。
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="foot">
+      <p style="margin:0 0 10px">这一版把"水流动"设计成了播放态的交互层，而不是额外装饰。你后面如果要继续做产品版，我建议把它升级为可复用规则：<strong>建筑特征 → 音乐参数 → 水流动参数</strong>，让视觉与声音共同响应同一套建筑逻辑。</p>
+      <p style="margin:0; font-size:12.5px; letter-spacing:0.04em;">另见 <a href="./poster.html" style="color:inherit; border-bottom:1px solid currentColor; text-decoration:none;">poster 海报版</a> · <a href="./editorial.html" style="color:inherit; border-bottom:1px solid currentColor; text-decoration:none;">editorial 书页版</a> · <a href="./original.html" style="color:inherit; border-bottom:1px solid currentColor; text-decoration:none;">original 最初版</a></p>
+    </div>
+  </main>
+
+  <script>
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    const audioContext = AudioContextClass ? new AudioContextClass() : null;
+    const allAudios = [...document.querySelectorAll('audio')];
+    const tracks = [...document.querySelectorAll('.track')].map((track, index) => {
+      const audio = track.querySelector('audio');
+      const canvas = track.querySelector('.flow-canvas');
+      const playState = track.querySelector('.play-state');
+      const ctx = canvas.getContext('2d');
+
+      // 自定义水面播放器
+      const playBtn = track.querySelector('.play-btn');
+      const timeCurrent = track.querySelector('.time-current');
+      const timeTotal = track.querySelector('.time-total');
+      const progWrap = track.querySelector('.wave-progress');
+      const playedEl = track.querySelector('.wave-progress .played');
+      const playheadEl = track.querySelector('.wave-progress .playhead');
+      const bigWave = track.querySelector('.big-wave-canvas');
+      const bctx = bigWave ? bigWave.getContext('2d') : null;
+      let bWidth = 0;
+      let bHeight = 0;
+      let smoothEnergy = 0;
+
+      // 每个 track 预生成一组尖刺波形"骨架"，保证形状稳定（像 demo 里的固定声纹），
+      // 再在运行时按能量 + 时间做上下呼吸/抖动。
+      const waveBars = (() => {
+        const bars = [];
+        const count = 180;
+        // 用 seeded 伪随机，让每个 track 都有自己的独特纹理但保持稳定
+        let seed = (track.dataset.theme || 'x').split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+        const rand = () => {
+          seed = (seed * 9301 + 49297) % 233280;
+          return seed / 233280;
+        };
+        for (let i = 0; i < count; i += 1) {
+          const p = i / (count - 1);
+          // 类似声纹：中段最高，两端较低；再叠加一些随机尖刺
+          const envelope = Math.pow(Math.sin(p * Math.PI), 0.7);
+          const spike = 0.4 + rand() * 0.9;
+          const micro = 0.8 + rand() * 0.6;
+          bars.push({
+            base: envelope * spike,
+            jitter: micro,
+            phase: rand() * Math.PI * 2,
+          });
+        }
+        return bars;
+      })();
+
+      const config = {
+        speed: Number(track.dataset.speed || 0.001),
+        amplitude: Number(track.dataset.amplitude || 8),
+        density: Number(track.dataset.density || 10),
+        rippleEvery: Number(track.dataset.ripple || 2000),
+        theme: track.dataset.theme || 'default',
+      };
+
+      let analyser = null;
+      let source = null;
+      let freqData = null;
+      let ready = false;
+      let lastRipple = 0;
+      let ripples = [];
+      let width = 0;
+      let height = 0;
+      let dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+      function resize() {
+        const rect = canvas.getBoundingClientRect();
+        width = rect.width;
+        height = rect.height;
+        canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+        canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        // 大水纹波形 canvas
+        if (bigWave && bctx) {
+          const br = bigWave.getBoundingClientRect();
+          bWidth = br.width;
+          bHeight = br.height;
+          bigWave.width = Math.max(1, Math.floor(br.width * dpr));
+          bigWave.height = Math.max(1, Math.floor(br.height * dpr));
+          bctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+      }
+
+      function ensureAudioGraph() {
+        if (!audioContext || ready) return;
+        source = audioContext.createMediaElementSource(audio);
+        analyser = audioContext.createAnalyser();
+        analyser.fftSize = 128;
+        analyser.smoothingTimeConstant = 0.82;
+        freqData = new Uint8Array(analyser.frequencyBinCount);
+        source.connect(analyser);
+        analyser.connect(audioContext.destination);
+        ready = true;
+      }
+
+      function getEnergy() {
+        if (!analyser || !freqData) return 0;
+        analyser.getByteFrequencyData(freqData);
+        let sum = 0;
+        for (let i = 0; i < freqData.length; i += 1) sum += freqData[i];
+        return (sum / freqData.length) / 255;
+      }
+
+      function spawnRipple(energy) {
+        ripples.push({
+          x: width * (0.22 + Math.random() * 0.56),
+          y: height * (0.22 + Math.random() * 0.52),
+          r: 12 + energy * 10,
+          a: 0.16 + energy * 0.18,
+          v: 0.3 + energy * 0.7,
+        });
+      }
+
+      function drawBackdrop(energy) {
+        const gradient = ctx.createLinearGradient(0, 0, 0, height);
+        gradient.addColorStop(0, 'rgba(255,255,255,0.02)');
+        gradient.addColorStop(1, 'rgba(17,17,17,' + (0.03 + energy * 0.05).toFixed(3) + ')');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, width, height);
+      }
+
+      function drawLines(t, energy, playing) {
+        const lineCount = config.density;
+        const baseAmp = config.amplitude * (playing ? (0.4 + energy * 1.8) : 0.22);
+        const glowAmp = playing ? 0.22 + energy * 0.35 : 0.08;
+
+        for (let i = 0; i < lineCount; i += 1) {
+          const yBase = height * (0.14 + (i + 1) / (lineCount + 2) * 0.72);
+          const alpha = playing ? (0.07 + i / lineCount * 0.055) : (0.035 + i / lineCount * 0.03);
+          ctx.beginPath();
+          for (let x = -20; x <= width + 20; x += 6) {
+            const nx = x / width;
+            const waveA = Math.sin((nx * 11) + t * config.speed * 2200 + i * 0.45);
+            const waveB = Math.cos((nx * 19) - t * config.speed * 1300 + i * 0.21);
+            const waveC = Math.sin((nx * 6) + t * config.speed * 900 + index * 0.8);
+            const y = yBase + (waveA * 0.55 + waveB * 0.28 + waveC * 0.17) * baseAmp;
+            if (x === -20) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.strokeStyle = 'rgba(17,17,17,' + alpha.toFixed(3) + ')';
+          ctx.lineWidth = i % 4 === 0 ? 1.25 : 0.9;
+          ctx.stroke();
+
+          if (playing && i % 3 === 0) {
+            ctx.beginPath();
+            for (let x = -20; x <= width + 20; x += 8) {
+              const nx = x / width;
+              const y = yBase + Math.sin((nx * 9) + t * config.speed * 1800 + i) * glowAmp * baseAmp;
+              if (x === -20) ctx.moveTo(x, y);
+              else ctx.lineTo(x, y);
+            }
+            ctx.strokeStyle = 'rgba(17,17,17,' + (0.04 + energy * 0.08).toFixed(3) + ')';
+            ctx.lineWidth = 2.6;
+            ctx.stroke();
+          }
+        }
+      }
+
+      function drawRipples() {
+        ripples = ripples.filter((r) => r.a > 0.006 && r.r < Math.max(width, height) * 1.2);
+        ripples.forEach((r) => {
+          ctx.beginPath();
+          ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
+          ctx.strokeStyle = 'rgba(17,17,17,' + r.a.toFixed(3) + ')';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+          r.r += r.v;
+          r.a *= 0.985;
+        });
+      }
+
+      function drawLabel(energy, playing) {
+        ctx.save();
+        ctx.font = '12px Inter, -apple-system, sans-serif';
+        ctx.fillStyle = playing ? 'rgba(17,17,17,0.72)' : 'rgba(17,17,17,0.38)';
+        const mood = playing ? 'FLOW ACTIVE' : 'FLOW IDLE';
+        ctx.fillText(mood, 18, height - 18);
+        if (playing) {
+          ctx.fillStyle = 'rgba(17,17,17,0.5)';
+          ctx.fillText('energy ' + (energy * 100).toFixed(0).padStart(2, '0'), width - 88, height - 18);
+        }
+        ctx.restore();
+      }
+
+      // === 大水纹波形绘制：播放器背后的主视觉 ===
+      function drawBigWave(t, energy, playing) {
+        if (!bctx || !bWidth || !bHeight) return;
+        bctx.clearRect(0, 0, bWidth, bHeight);
+
+        const duration = audio.duration || 0;
+        const current = audio.currentTime || 0;
+        const progress = duration > 0 ? Math.min(1, current / duration) : 0;
+
+        const midY = bHeight * 0.52;
+        const maxAmp = bHeight * 0.38;
+        // idle 下有很轻的呼吸，播放时跟随 smoothEnergy
+        const globalAmp = playing ? (0.35 + smoothEnergy * 1.1) : 0.25;
+        const phase = t * 0.002;
+
+        const n = waveBars.length;
+        const barW = bWidth / n;
+
+        // 颜色方案：深青 + 水蓝渐变（像 demo 里那张水纹）
+        const playedGrad = bctx.createLinearGradient(0, 0, 0, bHeight);
+        playedGrad.addColorStop(0, 'rgba(28, 60, 78, 0.88)');     // 顶：深青
+        playedGrad.addColorStop(0.5, 'rgba(48, 92, 112, 0.82)');  // 中：水蓝
+        playedGrad.addColorStop(1, 'rgba(20, 42, 56, 0.72)');     // 底：更深
+
+        const idleColor = 'rgba(130, 150, 160, 0.35)';  // 未播放部分：淡水蓝灰
+        const idlePlayingColor = 'rgba(90, 118, 132, 0.42)';
+
+        // 底部水面倒影的水平带
+        const bandY = midY;
+        bctx.save();
+        bctx.globalCompositeOperation = 'source-over';
+
+        // 先画水面反射带（左右贯通的细水平线，像 demo 里贯穿中间的那条水线）
+        bctx.beginPath();
+        bctx.moveTo(0, bandY);
+        bctx.lineTo(bWidth, bandY);
+        bctx.strokeStyle = 'rgba(28, 60, 78, 0.18)';
+        bctx.lineWidth = 1;
+        bctx.stroke();
+
+        // 主波形：每个 bar 都绘制成"上刺 + 下刺"的对称尖刺，顶部更夸张、下部较浅
+        for (let i = 0; i < n; i += 1) {
+          const bar = waveBars[i];
+          const x = i * barW + barW * 0.5;
+          const barProgress = (i + 0.5) / n;
+          const isPlayed = barProgress <= progress;
+
+          // 实时能量 + 位置抖动
+          const breathe = Math.sin(phase + bar.phase) * 0.25 + 1;
+          const wobble = playing ? (Math.sin(phase * 3 + i * 0.35) * 0.18) : 0;
+          const h = bar.base * (globalAmp + wobble) * maxAmp * breathe;
+          const hUp = h * (1.1 + bar.jitter * 0.3);
+          const hDn = h * 0.55;
+
+          const color = isPlayed
+            ? playedGrad
+            : (playing ? idlePlayingColor : idleColor);
+
+          bctx.fillStyle = color;
+          // 尖刺形状：三角形（自上而下）
+          bctx.beginPath();
+          bctx.moveTo(x - barW * 0.45, bandY);
+          bctx.lineTo(x, bandY - hUp);
+          bctx.lineTo(x + barW * 0.45, bandY);
+          bctx.closePath();
+          bctx.fill();
+
+          // 下部倒影（浅一些、短一些）
+          bctx.globalAlpha = isPlayed ? 0.6 : 0.35;
+          bctx.beginPath();
+          bctx.moveTo(x - barW * 0.45, bandY);
+          bctx.lineTo(x, bandY + hDn);
+          bctx.lineTo(x + barW * 0.45, bandY);
+          bctx.closePath();
+          bctx.fill();
+          bctx.globalAlpha = 1;
+        }
+
+        // 水光高亮：播放态下在已播放区域扫一条亮带（水反光感）
+        if (playing) {
+          const glowX = progress * bWidth;
+          const glowGrad = bctx.createRadialGradient(glowX, bandY, 0, glowX, bandY, 120);
+          glowGrad.addColorStop(0, 'rgba(180, 210, 225, 0.45)');
+          glowGrad.addColorStop(1, 'rgba(180, 210, 225, 0)');
+          bctx.fillStyle = glowGrad;
+          bctx.fillRect(glowX - 120, bandY - 60, 240, 120);
+        }
+
+        // 水滴飞溅：随机在已播放区域冒一些小点（像 demo 右边那些溅出来的水花）
+        if (playing) {
+          const splashCount = 5;
+          for (let k = 0; k < splashCount; k += 1) {
+            const rx = (Math.sin(phase * 2 + k * 1.7) * 0.5 + 0.5) * progress * bWidth;
+            const ry = bandY - 40 - Math.abs(Math.sin(phase * 3 + k)) * 30;
+            const rr = 1 + Math.abs(Math.sin(phase * 4 + k * 2)) * 2.5;
+            bctx.beginPath();
+            bctx.arc(rx, ry, rr, 0, Math.PI * 2);
+            bctx.fillStyle = 'rgba(150, 185, 200, ' + (0.3 + smoothEnergy * 0.4).toFixed(3) + ')';
+            bctx.fill();
+          }
+        }
+
+        bctx.restore();
+
+        // 同步 played 填充与 playhead 位置（DOM）
+        if (playedEl) playedEl.style.width = (progress * 100).toFixed(2) + '%';
+        if (playheadEl) playheadEl.style.left = (progress * 100).toFixed(2) + '%';
+      }
+
+      function fmtTime(sec) {
+        if (!isFinite(sec) || sec < 0) return '0:00';
+        const m = Math.floor(sec / 60);
+        const s = Math.floor(sec % 60);
+        return m + ':' + (s < 10 ? '0' + s : s);
+      }
+
+      function updateTimes() {
+        timeCurrent.textContent = fmtTime(audio.currentTime);
+        timeTotal.textContent = fmtTime(audio.duration);
+      }
+
+      function render(t) {
+        const playing = !audio.paused && !audio.ended;
+        const energy = playing ? getEnergy() : 0;
+        // 能量平滑（避免水面抖得太生硬）
+        smoothEnergy = smoothEnergy * 0.82 + energy * 0.18;
+
+        ctx.clearRect(0, 0, width, height);
+        drawBackdrop(energy);
+        drawLines(t, energy, playing);
+        if (playing && t - lastRipple > config.rippleEvery) {
+          spawnRipple(energy);
+          lastRipple = t;
+        }
+        drawRipples();
+        drawLabel(energy, playing);
+
+        // 大水纹波形（播放器背后）
+        drawBigWave(t, energy, playing);
+        if (playing) updateTimes();
+
+        requestAnimationFrame(render);
+      }
+
+      resize();
+      requestAnimationFrame(render);
+      window.addEventListener('resize', resize);
+
+      // 元数据加载后显示总时长
+      audio.addEventListener('loadedmetadata', updateTimes);
+      audio.addEventListener('timeupdate', updateTimes);
+
+      // 点击播放/暂停
+      playBtn.addEventListener('click', () => {
+        if (audio.paused) audio.play();
+        else audio.pause();
+      });
+
+      // 点击进度条跳转
+      progWrap.addEventListener('click', (e) => {
+        if (!audio.duration) return;
+        const rect = progWrap.getBoundingClientRect();
+        const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+        audio.currentTime = ratio * audio.duration;
+      });
+
+      // 进度条 hover：显示将跳转到的时间点
+      const seekHint = progWrap.querySelector('.seek-hint');
+      progWrap.addEventListener('mousemove', (e) => {
+        if (!audio.duration || !seekHint) return;
+        const rect = progWrap.getBoundingClientRect();
+        const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+        seekHint.style.left = (ratio * 100) + '%';
+        seekHint.dataset.time = fmtTime(ratio * audio.duration);
+      });
+
+      audio.addEventListener('play', async () => {
+        allAudios.forEach((item) => {
+          if (item !== audio) item.pause();
+        });
+        if (audioContext) {
+          await audioContext.resume();
+          ensureAudioGraph();
+        }
+        track.classList.add('is-playing');
+        playState.dataset.live = 'true';
+        playState.textContent = 'water active';
+      });
+
+      ['pause', 'ended'].forEach((eventName) => {
+        audio.addEventListener(eventName, () => {
+          track.classList.remove('is-playing');
+          playState.dataset.live = 'false';
+          playState.textContent = 'water idle';
+        });
+      });
+
+      return { resize };
+    });
+
+    window.addEventListener('resize', () => tracks.forEach((track) => track.resize()));
+  </script>
+</body>
+</html>

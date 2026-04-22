@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>建筑是流动的音乐 · 最初版</title>
+  <style>
+    :root {
+      --bg: #f4f1eb;
+      --panel: rgba(251, 250, 248, 0.88);
+      --panel-strong: rgba(255, 255, 255, 0.54);
+      --text: #111111;
+      --muted: #666666;
+      --line: rgba(17, 17, 17, 0.12);
+      --line-strong: rgba(17, 17, 17, 0.26);
+      --ink: rgba(17, 17, 17, 0.88);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top, rgba(17, 17, 17, 0.035), transparent 36%),
+        linear-gradient(180deg, #f8f5ef 0%, #f2eee7 100%);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -12% -10%;
+      pointer-events: none;
+      background:
+        repeating-linear-gradient(
+          92deg,
+          rgba(17, 17, 17, 0.018) 0,
+          rgba(17, 17, 17, 0.018) 1px,
+          transparent 1px,
+          transparent 48px
+        );
+      opacity: 0.55;
+      animation: drift 18s linear infinite;
+    }
+
+    @keyframes drift {
+      from { transform: translate3d(0, 0, 0); }
+      to { transform: translate3d(48px, 0, 0); }
+    }
+
+    .page {
+      position: relative;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 48px 24px 72px;
+    }
+
+    /* —— HERO —— */
+    .hero {
+      display: grid;
+      grid-template-columns: 1.18fr 0.82fr;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    .hero-main, .hero-note, .track, .principles {
+      position: relative;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      backdrop-filter: blur(10px);
+      overflow: hidden;
+    }
+
+    .hero-main {
+      padding: 36px;
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .eyebrow {
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(42px, 6vw, 82px);
+      line-height: 0.94;
+      letter-spacing: -0.045em;
+      margin: 0 0 20px;
+      font-weight: 600;
+    }
+
+    .lead {
+      max-width: 720px;
+      font-size: 16px;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .hero-foot {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+
+    .hint {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 420px;
+    }
+
+    .hero-wave {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      min-width: 180px;
+      justify-content: flex-end;
+    }
+
+    .hero-wave span {
+      width: 1px;
+      height: 24px;
+      background: rgba(17, 17, 17, 0.2);
+      animation: barMove 2.2s ease-in-out infinite;
+      transform-origin: center bottom;
+    }
+    .hero-wave span:nth-child(2) { animation-delay: .15s; }
+    .hero-wave span:nth-child(3) { animation-delay: .30s; }
+    .hero-wave span:nth-child(4) { animation-delay: .45s; }
+    .hero-wave span:nth-child(5) { animation-delay: .60s; }
+    .hero-wave span:nth-child(6) { animation-delay: .75s; }
+    .hero-wave span:nth-child(7) { animation-delay: .90s; }
+
+    @keyframes barMove {
+      0%, 100% { transform: scaleY(0.4); opacity: 0.28; }
+      50% { transform: scaleY(1.45); opacity: 0.9; }
+    }
+
+    .hero-note {
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      border: 1px solid var(--line);
+      background: var(--line);
+    }
+    .mini-grid div {
+      background: rgba(255, 255, 255, 0.42);
+      padding: 14px 12px;
+      min-height: 92px;
+      font-size: 13.5px;
+      color: var(--muted);
+    }
+    .mini-grid strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .principles {
+      margin-bottom: 18px;
+      padding: 22px 24px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--line);
+    }
+    .principles > div {
+      background: var(--panel-strong);
+      padding: 18px 16px;
+      min-height: 126px;
+    }
+    .principles h3 {
+      font-size: 14px;
+      margin: 0 0 8px;
+      letter-spacing: -0.01em;
+    }
+    .principles p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* —— TRACK —— */
+    .tracks { display: grid; gap: 18px; }
+
+    .track {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      transition: border-color .35s ease, transform .35s ease, box-shadow .35s ease;
+    }
+
+    .track.is-playing {
+      border-color: rgba(17, 17, 17, 0.22);
+      box-shadow: 0 14px 32px rgba(17, 17, 17, 0.05);
+      transform: translateY(-2px);
+    }
+
+    .track-aspect {
+      position: relative;
+      min-height: 340px;
+      border-right: 1px solid var(--line);
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.22)),
+        linear-gradient(135deg, rgba(17, 17, 17, 0.04), rgba(17, 17, 17, 0));
+    }
+
+    .photo {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(1) contrast(1.05) brightness(0.98);
+      opacity: 0.82;
+      transition: opacity .5s ease, filter .5s ease, transform .6s ease;
+      z-index: 0;
+    }
+
+    .track.is-playing .photo {
+      opacity: 0.96;
+      filter: grayscale(0.85) contrast(1.08) brightness(1);
+      transform: scale(1.02);
+    }
+
+    .photo-mask {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, rgba(244, 241, 235, 0.22) 0%, rgba(244, 241, 235, 0) 40%, rgba(244, 241, 235, 0.15) 100%),
+        radial-gradient(120% 80% at 50% 50%, rgba(244, 241, 235, 0) 55%, rgba(244, 241, 235, 0.55) 100%);
+    }
+
+    .flow-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.9;
+      z-index: 2;
+    }
+
+    .status-dot {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(17, 17, 17, 0.14);
+      transition: background .3s ease;
+      z-index: 4;
+    }
+
+    .track.is-playing .status-dot {
+      background: rgba(17, 17, 17, 0.86);
+      animation: pulse 1.6s ease-out infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(17, 17, 17, 0.2); }
+      70% { box-shadow: 0 0 0 14px rgba(17, 17, 17, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(17, 17, 17, 0); }
+    }
+
+    .track-copy {
+      padding: 28px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .track-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .track-title {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+
+    .badge, .play-state {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border: 1px solid var(--line-strong);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .play-state[data-live="true"] {
+      color: var(--text);
+      border-color: rgba(17, 17, 17, 0.24);
+    }
+
+    .meta {
+      display: flex;
+      gap: 6px 14px;
+      flex-wrap: wrap;
+      align-items: baseline;
+      padding: 4px 0 2px;
+      font-size: 13.5px;
+      color: var(--muted);
+    }
+    .meta strong { color: var(--text); font-weight: 600; }
+    .meta .dot { color: rgba(17, 17, 17, 0.25); }
+
+    .footnote {
+      font-family: "Songti SC", "Noto Serif SC", "Georgia", serif;
+      font-size: 12px;
+      color: var(--muted);
+      font-style: italic;
+      padding-top: 4px;
+      border-top: 1px dashed rgba(17, 17, 17, 0.15);
+    }
+    .footnote::before { content: "↳ "; color: rgba(17,17,17,0.4); }
+
+    .controls-row { display: grid; gap: 10px; }
+
+    audio {
+      width: 100%;
+      height: 42px;
+      filter: grayscale(1) contrast(1.06);
+    }
+
+    .flow-caption {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.03em;
+    }
+
+    p.describe {
+      margin: 0;
+      color: #2b2b2b;
+      font-size: 14.5px;
+      line-height: 1.8;
+    }
+
+    .foot {
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      font-size: 13px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .foot a {
+      color: inherit;
+      border-bottom: 1px solid currentColor;
+      text-decoration: none;
+    }
+
+    @media (max-width: 980px) {
+      .hero { grid-template-columns: 1fr; }
+      .principles { grid-template-columns: 1fr; }
+      .track { grid-template-columns: 1fr; }
+      .track-aspect { min-height: 220px; border-right: none; border-bottom: 1px solid var(--line); }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div class="hero-main">
+        <div>
+          <div class="eyebrow">ARCHITECTURE × SOUND · WATER MOTION STUDY</div>
+          <h1>让声音像水一样，在建筑里流动</h1>
+          <p class="lead">你想加"水流动"的 UI，我建议不要做蓝色、拟物、太海洋化的效果，而是做成一种更克制的 <strong>建筑式水纹</strong>：黑白、细线、缓慢、带回响，像声音在纸面和空间里被轻轻推开。</p>
+        </div>
+        <div class="hero-foot">
+          <p class="hint">现在这版原型里：点击任意一段 BGM 播放时，左侧会出现随声音起伏的流线、水纹与涟漪。不同建筑，水流的密度、速度和回响都不一样。</p>
+          <div class="hero-wave" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+
+      <aside class="hero-note">
+        <div>
+          <div class="eyebrow">交互语义</div>
+          <p style="margin:0">水流动效果不是装饰，而是<strong>"声音被空间传导"</strong>的可视化。它应该表达的是：秩序、回声、留白、脉冲、呼吸，而不是炫目的特效。</p>
+        </div>
+        <div class="mini-grid">
+          <div><strong>几何型建筑</strong>水纹更平直、更克制，像镜面上的轻微波动。</div>
+          <div><strong>网格型建筑</strong>水流更快、更碎，像被分割后的城市脉冲。</div>
+          <div><strong>礼堂型建筑</strong>水波更慢、更大、更有回响，像晨雾里扩散的钟声。</div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="principles">
+      <div>
+        <h3>01. 黑白而不是蓝色</h3>
+        <p>保留项目的高级感。水感来自线条、透明度、回声和流动节奏，而不是依赖颜色暗示。</p>
+      </div>
+      <div>
+        <h3>02. 播放才苏醒</h3>
+        <p>静止时只保留轻微水纹；按下播放后，流线抬升、涟漪扩散、状态点跳动，形成"被唤醒"的反馈。</p>
+      </div>
+      <div>
+        <h3>03. 建筑决定水的性格</h3>
+        <p>同样是水，每种建筑都有不同流速、波幅和回声距离，这样视觉语言会和声音人格真正绑定。</p>
+      </div>
+    </section>
+
+    <section class="tracks">
+      <article class="track" data-theme="pei" data-speed="0.0007" data-amplitude="6" data-density="10" data-ripple="2200">
+        <div class="track-aspect">
+          <img class="photo" src="./images/01-pei.jpg" alt="贝聿铭风格几何建筑原图" />
+          <div class="photo-mask"></div>
+          <canvas class="flow-canvas"></canvas>
+          <div class="status-dot"></div>
+        </div>
+        <div class="track-copy">
+          <div class="track-head">
+            <div>
+              <div class="eyebrow">TRACK 01</div>
+              <h2 class="track-title">几何白墙 · Geometric Minimal</h2>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+              <span class="badge">24 sec · minimal</span>
+              <span class="play-state" data-live="false">water idle</span>
+            </div>
+          </div>
+          <div class="meta">
+            <span><strong>折线</strong></span><span class="dot">·</span>
+            <span>秩序</span><span class="dot">·</span>
+            <span>镜像</span><span class="dot">·</span>
+            <span>留白</span>
+          </div>
+          <div class="footnote">平直细波 · 低振幅 · 规则扩散</div>
+          <p class="describe">这里的水纹应该像白墙上的反光，不要太"水"。所以我让它只在播放时微微抬起，用更平整的流线和更慢的扩散节奏，强调几何秩序感。</p>
+          <div class="controls-row">
+            <audio controls preload="metadata" src="./output/01-pei-geometric-minimal.wav"></audio>
+            <div class="flow-caption"><span>播放后：镜像流线会更清晰</span><span>视觉重点：克制、对称、空气感</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="track" data-theme="mondrian" data-speed="0.00135" data-amplitude="10" data-density="13" data-ripple="1400">
+        <div class="track-aspect">
+          <img class="photo" src="./images/02-mondrian.jpg" alt="蒙德里安风格几何色彩建筑原图" />
+          <div class="photo-mask"></div>
+          <canvas class="flow-canvas"></canvas>
+          <div class="status-dot"></div>
+        </div>
+        <div class="track-copy">
+          <div class="track-head">
+            <div>
+              <div class="eyebrow">TRACK 02</div>
+              <h2 class="track-title">色块网格 · Urban Grid Pulse</h2>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+              <span class="badge">22 sec · rhythmic</span>
+              <span class="play-state" data-live="false">water idle</span>
+            </div>
+          </div>
+          <div class="meta">
+            <span><strong>网格</strong></span><span class="dot">·</span>
+            <span>色块</span><span class="dot">·</span>
+            <span>街头</span><span class="dot">·</span>
+            <span>切分</span>
+          </div>
+          <div class="footnote">密波 · 脉冲 · 更频繁涟漪</div>
+          <p class="describe">这类建筑不适合柔软的水面，更像被街道、窗格和节拍切开的脉冲流体。所以水纹更密、更快，涟漪触发也更频繁，像城市路口的节奏回声。</p>
+          <div class="controls-row">
+            <audio controls preload="metadata" src="./output/02-mondrian-urban-grid.wav"></audio>
+            <div class="flow-caption"><span>播放后：流线密度和起伏都会增加</span><span>视觉重点：节拍、切分、都市脉冲</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="track" data-theme="aranya" data-speed="0.00055" data-amplitude="14" data-density="9" data-ripple="2600">
+        <div class="track-aspect">
+          <img class="photo" src="./images/03-aranya.jpg" alt="阿那亚礼堂清晨原图" />
+          <div class="photo-mask"></div>
+          <canvas class="flow-canvas"></canvas>
+          <div class="status-dot"></div>
+        </div>
+        <div class="track-copy">
+          <div class="track-head">
+            <div>
+              <div class="eyebrow">TRACK 03</div>
+              <h2 class="track-title">黎明礼堂 · Dawn Chapel Ambient</h2>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+              <span class="badge">28 sec · ambient</span>
+              <span class="play-state" data-live="false">water idle</span>
+            </div>
+          </div>
+          <div class="meta">
+            <span><strong>尖顶</strong></span><span class="dot">·</span>
+            <span>台阶</span><span class="dot">·</span>
+            <span>海边</span><span class="dot">·</span>
+            <span>孤独</span><span class="dot">·</span>
+            <span>浪漫</span>
+          </div>
+          <div class="footnote">慢波 · 长尾回响 · 大范围扩散</div>
+          <p class="describe">这段最适合做成"回声中的水"。播放时，水流并不快，但每一层波线都更深、更长，像钟声在晨雾和海风里慢慢散开。</p>
+          <div class="controls-row">
+            <audio controls preload="metadata" src="./output/03-aranya-dawn-chapel.wav"></audio>
+            <div class="flow-caption"><span>播放后：大波幅与长尾涟漪更明显</span><span>视觉重点：留白、上行、回响空间</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="track" data-theme="mad" data-speed="0.00045" data-amplitude="16" data-density="8" data-ripple="3000">
+        <div class="track-aspect">
+          <img class="photo" src="./images/04-mad.jpg" alt="MAD 有机曲面建筑鸟瞰原图" />
+          <div class="photo-mask"></div>
+          <canvas class="flow-canvas"></canvas>
+          <div class="status-dot"></div>
+        </div>
+        <div class="track-copy">
+          <div class="track-head">
+            <div>
+              <div class="eyebrow">TRACK 04</div>
+              <h2 class="track-title">有机曲面 · Organic Flow</h2>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+              <span class="badge">32 sec · organic</span>
+              <span class="play-state" data-live="false">water idle</span>
+            </div>
+          </div>
+          <div class="meta">
+            <span><strong>伞盖</strong></span><span class="dot">·</span>
+            <span>生长</span><span class="dot">·</span>
+            <span>放射</span><span class="dot">·</span>
+            <span>呼吸</span><span class="dot">·</span>
+            <span>鸟瞰</span>
+          </div>
+          <div class="footnote">极慢呼吸 · 向外绽放 · 长尾漂浮</div>
+          <p class="describe">这是一栋"没有直角"的建筑。音乐里也没有切分节奏，只有一个持续的中央主音，像建筑的粗柱；其他音符从它身上向外辐射、扩散，像一把伞在鸟瞰里慢慢打开。</p>
+          <div class="controls-row">
+            <audio controls preload="metadata" src="./output/04-mad-organic-flow.wav"></audio>
+            <div class="flow-caption"><span>播放后：水面起伏最慢、幅度最大</span><span>视觉重点：呼吸、生长、向外辐射</span></div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="foot">
+      <span>这一版把"水流动"设计成了播放态的交互层，而不是额外装饰。</span>
+      <span>另见 <a href="./poster.html">poster 海报版</a> · <a href="./index.html">collage 拼贴版</a> · <a href="./editorial.html">editorial 书页版</a></span>
+    </div>
+  </main>
+
+  <script>
+    const allAudios = [...document.querySelectorAll('audio')];
+
+    document.querySelectorAll('.track').forEach((track, index) => {
+      const audio = track.querySelector('audio');
+      const canvas = track.querySelector('.flow-canvas');
+      const playState = track.querySelector('.play-state');
+      const ctx = canvas.getContext('2d');
+
+      const config = {
+        speed: Number(track.dataset.speed || 0.001),
+        amplitude: Number(track.dataset.amplitude || 8),
+        density: Number(track.dataset.density || 10),
+        rippleEvery: Number(track.dataset.ripple || 2000),
+      };
+
+      let width = 0, height = 0;
+      let ripples = [];
+      let lastRipple = 0;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+      function resize() {
+        const rect = canvas.getBoundingClientRect();
+        width = rect.width;
+        height = rect.height;
+        canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+        canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      function spawnRipple(energy) {
+        ripples.push({
+          x: width * (0.22 + Math.random() * 0.56),
+          y: height * (0.22 + Math.random() * 0.52),
+          r: 12 + energy * 10,
+          a: 0.16 + energy * 0.18,
+          v: 0.3 + energy * 0.7,
+        });
+      }
+
+      function drawLines(t, playing) {
+        const lineCount = config.density;
+        const baseAmp = config.amplitude * (playing ? 1.2 : 0.22);
+
+        for (let i = 0; i < lineCount; i += 1) {
+          const yBase = height * (0.14 + (i + 1) / (lineCount + 2) * 0.72);
+          const alpha = playing ? (0.07 + i / lineCount * 0.055) : (0.035 + i / lineCount * 0.03);
+          ctx.beginPath();
+          for (let x = -20; x <= width + 20; x += 6) {
+            const nx = x / width;
+            const waveA = Math.sin((nx * 11) + t * config.speed * 2200 + i * 0.45);
+            const waveB = Math.cos((nx * 19) - t * config.speed * 1300 + i * 0.21);
+            const waveC = Math.sin((nx * 6) + t * config.speed * 900 + index * 0.8);
+            const y = yBase + (waveA * 0.55 + waveB * 0.28 + waveC * 0.17) * baseAmp;
+            if (x === -20) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.strokeStyle = 'rgba(17,17,17,' + alpha.toFixed(3) + ')';
+          ctx.lineWidth = i % 4 === 0 ? 1.25 : 0.9;
+          ctx.stroke();
+        }
+      }
+
+      function drawRipples() {
+        ripples = ripples.filter((r) => r.a > 0.006 && r.r < Math.max(width, height) * 1.2);
+        ripples.forEach((r) => {
+          ctx.beginPath();
+          ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
+          ctx.strokeStyle = 'rgba(17,17,17,' + r.a.toFixed(3) + ')';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+          r.r += r.v;
+          r.a *= 0.985;
+        });
+      }
+
+      function drawLabel(playing) {
+        ctx.save();
+        ctx.font = '12px Inter, -apple-system, sans-serif';
+        ctx.fillStyle = playing ? 'rgba(17,17,17,0.72)' : 'rgba(17,17,17,0.38)';
+        ctx.fillText(playing ? 'FLOW ACTIVE' : 'FLOW IDLE', 18, height - 18);
+        ctx.restore();
+      }
+
+      function render(t) {
+        const playing = !audio.paused && !audio.ended;
+        ctx.clearRect(0, 0, width, height);
+        drawLines(t, playing);
+        if (playing && t - lastRipple > config.rippleEvery) {
+          spawnRipple(0.6);
+          lastRipple = t;
+        }
+        drawRipples();
+        drawLabel(playing);
+        requestAnimationFrame(render);
+      }
+
+      resize();
+      requestAnimationFrame(render);
+      window.addEventListener('resize', resize);
+
+      audio.addEventListener('play', () => {
+        allAudios.forEach((item) => { if (item !== audio) item.pause(); });
+        track.classList.add('is-playing');
+        playState.dataset.live = 'true';
+        playState.textContent = 'water active';
+      });
+
+      ['pause', 'ended'].forEach((eventName) => {
+        audio.addEventListener(eventName, () => {
+          track.classList.remove('is-playing');
+          playState.dataset.live = 'false';
+          playState.textContent = 'water idle';
+        });
+      });
+    });
+  </script>
+</body>
+</html>

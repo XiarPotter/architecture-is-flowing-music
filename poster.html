@@ -1,0 +1,2120 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>建筑是流动的音乐 · Poster 海报版</title>
+  <style>
+    :root {
+      --paper: #ede2c6;
+      --paper-warm: #e8dcbe;
+      --paper-cool: #d7cfb8;
+      --paper-dark: #2a2f30;
+      --ink-gold: #d9b97a;
+      --ink-gold-soft: #f0d9a0;
+      --muted: #b8b0a0;
+      --line-soft: rgba(255, 252, 244, 0.22);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(120, 95, 40, 0.08), transparent 40%),
+        radial-gradient(circle at 88% 100%, rgba(20, 20, 20, 0.18), transparent 50%),
+        linear-gradient(180deg, #2a2f30 0%, #1f2425 100%);
+      color: #f2ead6;
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "PingFang SC", "Hiragino Sans GB", sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          rgba(255, 250, 230, 0.02) 0,
+          rgba(255, 250, 230, 0.02) 1px,
+          transparent 1px,
+          transparent 60px
+        );
+      opacity: 0.8;
+    }
+
+    .page {
+      position: relative;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 56px 24px 80px;
+    }
+
+    /* —— 顶部小封面 —— */
+    .masthead {
+      text-align: center;
+      padding: 16px 0 40px;
+      border-bottom: 1px solid rgba(255, 250, 230, 0.12);
+      margin-bottom: 48px;
+    }
+
+    .masthead .label {
+      font-family: "SF Mono", "Menlo", monospace;
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      color: var(--ink-gold);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .masthead h1 {
+      font-family: "Songti SC", "Noto Serif SC", Georgia, serif;
+      font-size: clamp(38px, 5.6vw, 64px);
+      line-height: 1.05;
+      margin: 0 0 10px;
+      font-weight: 700;
+      color: #f5eed8;
+      letter-spacing: -0.01em;
+    }
+
+    .masthead .sub {
+      font-family: Georgia, "Songti SC", serif;
+      font-style: italic;
+      font-size: 17px;
+      color: #c7bfa8;
+    }
+
+    /* —— 海报列表：一列正方形海报 —— */
+    .posters {
+      display: grid;
+      gap: 72px;
+    }
+
+    .poster {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(255, 250, 230, 0.06) inset,
+        0 30px 60px rgba(0, 0, 0, 0.55),
+        0 8px 16px rgba(0, 0, 0, 0.4);
+      isolation: isolate;
+      background: #2a2f30;
+    }
+
+    /* 建筑图置底 */
+    .poster-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center bottom;
+      filter: grayscale(0.25) contrast(1.08) brightness(0.82);
+      z-index: 0;
+      transition: filter .8s ease, transform 1.2s ease;
+    }
+
+    .poster.is-playing .poster-bg {
+      filter: grayscale(0.12) contrast(1.1) brightness(0.92);
+      transform: scale(1.02);
+    }
+
+    /* 半透明深灰蒙层，让文字可读 */
+    .poster-veil {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background:
+        linear-gradient(180deg, rgba(30, 36, 38, 0.62) 0%, rgba(30, 36, 38, 0.25) 40%, rgba(30, 36, 38, 0.55) 100%),
+        radial-gradient(120% 80% at 50% 50%, rgba(30, 36, 38, 0) 40%, rgba(30, 36, 38, 0.5) 100%);
+      pointer-events: none;
+    }
+
+    /* 纸张粒子：极少量，只在 veil 上点缀 */
+    .poster-grain {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        repeating-linear-gradient(
+          4deg,
+          rgba(255, 250, 230, 0.014) 0,
+          rgba(255, 250, 230, 0.014) 1px,
+          transparent 1px,
+          transparent 3px
+        );
+      mix-blend-mode: screen;
+    }
+
+    /* —— 海报上的内容层 —— */
+    .poster-content {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      padding: 40px 44px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 18px;
+    }
+
+    /* —— 四角 header —— */
+    .poster-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .poster-header .left-side {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      max-width: 70%;
+    }
+
+    .track-no {
+      display: inline-block;
+      align-self: flex-start;
+      font-family: "SF Mono", "Menlo", monospace;
+      font-size: 12px;
+      letter-spacing: 0.28em;
+      color: #3a2f1c;
+      background: var(--paper-warm);
+      padding: 4px 12px 3px;
+      transform: rotate(-1.5deg);
+      box-shadow: 0 3px 7px rgba(0, 0, 0, 0.4);
+    }
+
+    .poster-title {
+      margin: 0;
+      font-size: clamp(30px, 3.6vw, 40px);
+      line-height: 1.05;
+      font-weight: 700;
+      color: #f5eed8;
+      letter-spacing: -0.01em;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 6px 10px;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .poster-title .sep {
+      font-weight: 400;
+      color: #c7bfa8;
+      padding: 0 2px;
+    }
+
+    .poster-title .en {
+      font-family: Georgia, "Inter", serif;
+      font-weight: 600;
+      font-size: clamp(22px, 2.6vw, 30px);
+      color: #eadfb8;
+      letter-spacing: -0.005em;
+    }
+
+    .header-tags {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-end;
+    }
+
+    .tag {
+      font-family: "SF Mono", "Menlo", monospace;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #f5eed8;
+      padding: 4px 12px;
+      border: 1px solid rgba(245, 238, 216, 0.5);
+      background: transparent;
+      backdrop-filter: blur(3px);
+    }
+
+    .tag.live[data-on="true"] {
+      background: var(--paper-warm);
+      color: #3a2f1c;
+      border-color: var(--paper-warm);
+      animation: livePulse 1.8s ease-out infinite;
+    }
+
+    @keyframes livePulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(232, 220, 190, 0.5); }
+      50% { box-shadow: 0 0 0 8px rgba(232, 220, 190, 0); }
+    }
+
+    /* —— 中段：关键词群 + 播放器 —— */
+    .poster-mid {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 24px;
+      padding-top: 18px;
+    }
+
+    /* 播放器不再强制贴到底部 */
+    .player {
+      margin-top: 4px;
+      padding-top: 10px;
+    }
+
+    /* —— 关键词群 —— */
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 12px;
+      align-items: center;
+    }
+
+    .chip {
+      font-family: "Songti SC", "Noto Serif SC", Georgia, serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: #141414;
+      background: var(--paper-warm);
+      padding: 4px 12px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
+      transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease;
+      animation: chipFloat 7s ease-in-out infinite;
+      --rot: -1.5deg;
+      transform: rotate(var(--rot));
+      cursor: default;
+      position: relative;
+    }
+
+    .chip:nth-child(2n) { --rot: 1.6deg; background: var(--paper); }
+    .chip:nth-child(3n) { --rot: -2.2deg; background: var(--paper-cool); }
+    .chip:nth-child(4n) { --rot: 1.1deg; }
+
+    .chip:nth-child(1) { animation-delay: 0s; }
+    .chip:nth-child(2) { animation-delay: .7s; }
+    .chip:nth-child(3) { animation-delay: 1.4s; }
+    .chip:nth-child(4) { animation-delay: 2.1s; }
+    .chip:nth-child(5) { animation-delay: 2.8s; }
+    .chip:nth-child(6) { animation-delay: 3.5s; }
+    .chip:nth-child(7) { animation-delay: 4.2s; }
+    .chip:nth-child(8) { animation-delay: 4.9s; }
+
+    @keyframes chipFloat {
+      0%, 100% { transform: translateY(0) rotate(var(--rot)); }
+      50% { transform: translateY(-3px) rotate(calc(var(--rot) + 0.6deg)); }
+    }
+
+    .chip:hover {
+      transform: translateY(-4px) rotate(var(--rot)) scale(1.08) !important;
+      animation-play-state: paused;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.45) !important;
+      z-index: 5;
+    }
+
+    /* —— 可点击贴纸：翻转动效 —— */
+    .chip, .char-chip {
+      cursor: pointer;
+    }
+
+    .chip.is-flipping, .char-chip.is-flipping {
+      animation: chipFlip 0.55s ease-in-out forwards;
+      z-index: 6;
+    }
+
+    @keyframes chipFlip {
+      0% { transform: rotate(var(--rot, var(--cr, 0deg))) rotateY(0); }
+      50% { transform: rotate(0deg) rotateY(90deg) scale(1.15); }
+      100% { transform: rotate(var(--rot, var(--cr, 0deg))) rotateY(0); }
+    }
+
+    /* —— 统一卡片弹窗 —— */
+    .card-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(10, 14, 16, 0.76);
+      backdrop-filter: blur(8px);
+      animation: modalFade 0.3s ease-out;
+    }
+
+    .card-modal.open { display: flex; }
+
+    @keyframes modalFade {
+      from { opacity: 0; backdrop-filter: blur(0); }
+      to { opacity: 1; backdrop-filter: blur(8px); }
+    }
+
+    .card-paper {
+      position: relative;
+      width: min(460px, 88vw);
+      max-height: 80vh;
+      overflow: auto;
+      background:
+        linear-gradient(180deg, #f3e9cc, #e8dcbe);
+      padding: 36px 34px 30px;
+      box-shadow:
+        0 30px 70px rgba(0, 0, 0, 0.6),
+        0 10px 20px rgba(0, 0, 0, 0.3),
+        inset 0 0 0 1px rgba(60, 40, 10, 0.1);
+      transform: rotate(-1deg);
+      animation: cardIn 0.5s cubic-bezier(.2,.8,.2,1);
+    }
+
+    @keyframes cardIn {
+      from { transform: rotate(-1deg) translateY(20px) scale(0.92); opacity: 0; }
+      to { transform: rotate(-1deg) translateY(0) scale(1); opacity: 1; }
+    }
+
+    /* 卡片顶部胶带：半透明 + 斜贴 + 纤维纹理 + 撕口 */
+    .card-paper::before {
+      content: "";
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      width: 120px;
+      height: 32px;
+      transform: translateX(-55%) rotate(-5deg);
+      background:
+        /* 胶带高光 */
+        linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.22) 0%,
+          rgba(255, 255, 255, 0) 40%,
+          rgba(255, 255, 255, 0) 60%,
+          rgba(255, 255, 255, 0.14) 100%
+        ),
+        /* 胶带纤维纹 */
+        repeating-linear-gradient(
+          90deg,
+          rgba(80, 60, 20, 0.06) 0,
+          rgba(80, 60, 20, 0.06) 1px,
+          transparent 1px,
+          transparent 3px
+        ),
+        /* 胶带主色（半透明淡黄） */
+        linear-gradient(180deg, rgba(220, 200, 145, 0.78), rgba(200, 175, 110, 0.7));
+      /* 两端撕口（不规则边缘） */
+      clip-path: polygon(
+        3% 8%, 8% 0%, 14% 12%, 22% 3%, 30% 10%, 38% 2%, 48% 8%, 58% 1%, 68% 10%, 76% 3%, 85% 11%, 92% 2%, 97% 9%,
+        98% 88%, 92% 100%, 84% 90%, 76% 98%, 68% 92%, 58% 100%, 48% 90%, 38% 98%, 30% 92%, 22% 100%, 14% 90%, 8% 98%, 2% 92%
+      );
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.22);
+      pointer-events: none;
+    }
+
+    /* 再叠一条：让胶带看起来有一点褶皱 */
+    .card-paper::after {
+      content: "";
+      position: absolute;
+      top: -6px;
+      left: 50%;
+      width: 100px;
+      height: 4px;
+      transform: translateX(-54%) rotate(-5deg);
+      background: linear-gradient(90deg, transparent, rgba(60, 40, 10, 0.14), transparent);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .card-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 30px;
+      height: 30px;
+      border: 1px solid rgba(20, 20, 20, 0.3);
+      background: rgba(255, 252, 244, 0.7);
+      color: #141414;
+      font-size: 16px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease;
+      font-family: Georgia, serif;
+    }
+
+    .card-close:hover { background: #fff; }
+
+    .card-eyebrow {
+      font-family: "SF Mono", "Menlo", monospace;
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: #6f5a28;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .card-word {
+      font-family: "Songti SC", "Noto Serif SC", Georgia, serif;
+      font-weight: 700;
+      font-size: 38px;
+      line-height: 1.1;
+      color: #141414;
+      margin: 0 0 18px;
+      letter-spacing: 0.02em;
+    }
+
+    .card-word .mini {
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 18px;
+      font-weight: 400;
+      color: #6f5a28;
+      margin-left: 6px;
+    }
+
+    .card-body {
+      font-family: "Songti SC", "Noto Serif SC", Georgia, serif;
+      font-size: 15.5px;
+      line-height: 1.95;
+      color: #2b2b2b;
+      padding: 16px 0;
+      border-top: 1px solid rgba(60, 40, 10, 0.2);
+      border-bottom: 1px solid rgba(60, 40, 10, 0.2);
+      white-space: pre-line; /* 尊重文案里的 \n 换行 */
+    }
+
+    .card-body em {
+      font-style: normal;
+      background: rgba(20, 20, 20, 0.85);
+      color: #f5eed8;
+      padding: 0 5px;
+    }
+
+    .card-foot {
+      padding-top: 14px;
+      font-family: "SF Mono", "Menlo", monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: #6f5a28;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-foot .play-cue {
+      color: #141414;
+      border-bottom: 1px solid currentColor;
+      cursor: pointer;
+      padding-bottom: 1px;
+    }
+
+    /* 黑底白字强调 */
+    .chip.hl-dark {
+      background: #141414;
+      color: #f5eed8;
+    }
+
+    /* —— 每字独立底纹：char-chip —— */
+    .char-group {
+      display: inline-flex;
+      gap: 3px;
+      padding: 3px 2px;
+      vertical-align: baseline;
+      animation: chipFloat 7s ease-in-out infinite;
+      --rot: -1deg;
+      transform: rotate(var(--rot));
+    }
+
+    .char-chip {
+      display: inline-block;
+      font-family: "Songti SC", "Noto Serif SC", Georgia, serif;
+      font-weight: 700;
+      color: #111;
+      padding: 4px 6px 3px;
+      background: var(--paper-warm);
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+      position: relative;
+      line-height: 1;
+      transition: transform .4s cubic-bezier(.2,.8,.2,1);
+      --cr: 0deg;
+      transform: rotate(var(--cr));
+    }
+
+    /* 每个字单独微微偏转 + 4 种底色循环 */
+    .char-chip:nth-child(6n+1) {
+      --cr: -2deg;
+      background: #c8a968; /* 更深米黄 */
+      color: #1a1208;
+    }
+    .char-chip:nth-child(6n+2) {
+      --cr: 1.5deg;
+      background: #141414; /* 黑底白字 */
+      color: #f5eed8;
+    }
+    .char-chip:nth-child(6n+3) {
+      --cr: -1deg;
+      background: #f1e6c8; /* 米白 */
+      color: #141414;
+    }
+    .char-chip:nth-child(6n+4) {
+      --cr: 2.2deg;
+      background: #1c2d46; /* 深蓝底白字 */
+      color: #f5eed8;
+    }
+    .char-chip:nth-child(6n+5) {
+      --cr: -1.8deg;
+      background: var(--paper-warm);
+      color: #141414;
+    }
+    .char-chip:nth-child(6n) {
+      --cr: 1deg;
+      background: #2a2f30; /* 深灰底 */
+      color: #f0d9a0;
+    }
+
+    .char-group:hover .char-chip {
+      transform: translateY(-2px) rotate(var(--cr)) scale(1.05);
+    }
+
+    /* 错落放大：个别字用 xl / xxl 修饰，字号和底色都升级 */
+    .char-chip.xl {
+      font-size: 1.35em;
+      padding: 7px 11px 6px;
+      background: #141414 !important;
+      color: #f5eed8 !important;
+      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.55);
+      --cr: 2.5deg;
+      z-index: 2;
+    }
+
+    .char-chip.xxl {
+      font-size: 1.75em;
+      padding: 9px 14px 7px;
+      background: #1c2d46 !important;
+      color: #f5eed8 !important;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.6);
+      --cr: -3deg;
+      z-index: 2;
+    }
+
+    .char-chip.deep {
+      background: #8a6e2e !important;
+      color: #f5eed8 !important;
+      font-size: 1.25em;
+      --cr: 1.8deg;
+    }
+
+    /* —— 大字短语：整行每字拆 · 字号更大 —— */
+    .phrase-line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 8px 10px;
+      padding: 10px 0 6px;
+    }
+
+    .phrase-line .char-group {
+      font-size: clamp(36px, 4.4vw, 52px);
+    }
+
+    .phrase-line .char-group .char-chip {
+      padding: 7px 12px 6px;
+      font-size: inherit;
+      font-weight: 700;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
+    }
+
+    .phrase-line .comma {
+      font-family: Georgia, serif;
+      font-size: clamp(56px, 5.8vw, 76px);
+      color: #f0d9a0;
+      transform: translateY(10px) rotate(4deg);
+      padding-left: 4px;
+      line-height: 1;
+    }
+
+    /* 关键词群里的 char-group 字号也拉大 */
+    .chips .char-group {
+      font-size: 26px;
+    }
+
+    .chips .char-group .char-chip {
+      padding: 5px 9px 4px;
+      font-size: inherit;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.42);
+    }
+
+    /* —— 播放器：大波形 + 金色亮线 —— */
+    .big-wave-canvas {
+      position: absolute;
+      left: -20px;
+      right: -20px;
+      top: -60px;
+      bottom: -20px;
+      width: calc(100% + 40px);
+      height: calc(100% + 80px);
+      display: block;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .player-row {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 4px 2px;
+    }
+
+    .play-btn {
+      width: 56px;
+      height: 56px;
+      border: none;
+      background: #f5eed8;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
+      flex-shrink: 0;
+      transition: background .25s ease, transform .2s ease;
+      box-shadow:
+        0 0 0 3px rgba(245, 238, 216, 0.2),
+        0 6px 14px rgba(0, 0, 0, 0.5);
+    }
+
+    .play-btn:hover { background: #fff; transform: scale(1.04); }
+    .play-btn:active { transform: scale(0.95); }
+
+    .play-btn .icon-play,
+    .play-btn .icon-pause {
+      display: block;
+      width: 0;
+      height: 0;
+    }
+
+    .play-btn .icon-play {
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-left: 14px solid #141414;
+      margin-left: 4px;
+    }
+
+    .play-btn .icon-pause {
+      width: 12px;
+      height: 16px;
+      border-left: 4px solid #141414;
+      border-right: 4px solid #141414;
+    }
+
+    .poster.is-playing .play-btn .icon-play { display: none; }
+    .poster:not(.is-playing) .play-btn .icon-pause { display: none; }
+
+    .time {
+      font-family: "SF Mono", "Menlo", monospace;
+      font-size: 12px;
+      color: #f5eed8;
+      min-width: 40px;
+      text-align: center;
+      background: rgba(20, 24, 26, 0.55);
+      padding: 3px 8px;
+      letter-spacing: 0.05em;
+    }
+
+    .wave-progress {
+      flex: 1;
+      position: relative;
+      height: 2px;
+      background: rgba(255, 250, 230, 0.18);
+      cursor: pointer;
+      align-self: center;
+    }
+
+    .wave-progress .played {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      background: rgba(245, 238, 216, 0.35);
+      width: 0%;
+      transition: width .08s linear;
+    }
+
+    /* playhead 的 top/left 都由 JS 在 canvas 坐标系下赋值 */
+    .wave-progress .playhead {
+      display: none; /* 曲线版里用 canvas 直接画播放头，DOM 版隐藏 */
+    }
+
+    /* —— 四角收束关键词 —— */
+    .poster-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .flow-stamp {
+      font-family: "SF Mono", "Menlo", monospace;
+      font-size: 11px;
+      letter-spacing: 0.24em;
+      color: rgba(245, 238, 216, 0.75);
+      text-transform: uppercase;
+      background: rgba(20, 24, 26, 0.55);
+      padding: 4px 10px;
+      transform: rotate(-1deg);
+      transition: background .3s ease, color .3s ease;
+    }
+
+    .flow-stamp::before { content: "◉ "; color: currentColor; }
+
+    .poster.is-playing .flow-stamp {
+      background: var(--ink-gold);
+      color: #2a2f30;
+    }
+
+    .outro-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 10px;
+      justify-content: flex-end;
+      max-width: 60%;
+    }
+
+    .outro-chips .chip { font-size: 16px; padding: 3px 10px; }
+    .outro-chips .char-group { font-size: 20px; }
+    .outro-chips .char-group .char-chip { padding: 4px 7px 3px; box-shadow: 0 3px 7px rgba(0, 0, 0, 0.4); }
+
+    /* —— 底部上传区 —— */
+    .uploader {
+      margin: 72px 0 0;
+      padding: 44px 32px 40px;
+      border: 2px dashed rgba(245, 238, 216, 0.35);
+      background:
+        linear-gradient(180deg, rgba(245, 238, 216, 0.04), rgba(245, 238, 216, 0.01));
+      text-align: center;
+      transition: border-color 0.3s ease, background 0.3s ease;
+      position: relative;
+    }
+
+    .uploader.dragover {
+      border-color: #f0d9a0;
+      background: linear-gradient(180deg, rgba(240, 217, 160, 0.1), rgba(240, 217, 160, 0.03));
+    }
+
+    .uploader .eyebrow {
+      font-family: "SF Mono", "Menlo", monospace;
+      font-size: 11px;
+      letter-spacing: 0.28em;
+      color: #d9b97a;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .uploader h3 {
+      font-family: "Songti SC", "Noto Serif SC", Georgia, serif;
+      font-size: clamp(26px, 3vw, 34px);
+      color: #f5eed8;
+      margin: 0 0 8px;
+      font-weight: 700;
+    }
+
+    .uploader .hint {
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 14px;
+      color: #b8b0a0;
+      margin-bottom: 22px;
+    }
+
+    .upload-btn {
+      display: inline-block;
+      padding: 12px 28px;
+      background: #f5eed8;
+      color: #141414;
+      font-family: "Songti SC", "Noto Serif SC", Georgia, serif;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+      transition: transform 0.2s ease, background 0.2s ease;
+      letter-spacing: 0.05em;
+    }
+
+    .upload-btn:hover { background: #fff; transform: translateY(-2px); }
+    .upload-btn:active { transform: translateY(0); }
+
+    #upload-input { display: none; }
+
+    .upload-status {
+      margin-top: 16px;
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 13px;
+      color: #d9b97a;
+      min-height: 20px;
+    }
+
+    /* 用户生成的海报稍微淡入一下 */
+    .poster.is-user {
+      animation: userIn 0.8s ease-out;
+    }
+    @keyframes userIn {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .site-foot {
+      margin-top: 72px;
+      padding-top: 26px;
+      border-top: 1px solid rgba(255, 250, 230, 0.12);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-family: Georgia, "Songti SC", serif;
+      font-style: italic;
+      font-size: 13.5px;
+      color: #9b9584;
+    }
+
+    .site-foot a {
+      color: #d9b97a;
+      text-decoration: none;
+      border-bottom: 1px solid currentColor;
+    }
+
+    @media (max-width: 720px) {
+      .poster-content { padding: 28px 24px; }
+      .poster-title { font-size: 24px; }
+      .poster-title .en { font-size: 18px; }
+      .chip { font-size: 16px; }
+      .chips .char-group { font-size: 17px; }
+      .phrase-line .char-group { font-size: 26px; }
+      .play-btn { width: 48px; height: 48px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="masthead">
+      <div class="label">Architecture × Sound · Poster Edition</div>
+      <h1>建筑是流动的音乐</h1>
+      <div class="sub">四张海报，每一张都是一栋建筑的呼吸</div>
+    </header>
+
+    <section class="posters">
+
+      <!-- ==== TRACK 01 · PEI ==== -->
+      <article class="poster" data-theme="pei">
+        <img class="poster-bg" src="./images/01-pei.jpg" alt="贝聿铭风格几何建筑" />
+        <div class="poster-veil"></div>
+        <div class="poster-grain"></div>
+        <div class="poster-content">
+          <header class="poster-header">
+            <div class="left-side">
+              <span class="track-no">TRACK 01</span>
+              <h2 class="poster-title">
+                <span>几何白墙</span><span class="sep">·</span><span class="en">Geometric Minimal</span>
+              </h2>
+            </div>
+            <div class="header-tags">
+              <span class="tag">24 sec · minimal</span>
+              <span class="tag live" data-on="false">water idle</span>
+            </div>
+          </header>
+          <div class="poster-mid">
+            <div class="chips">
+              <span class="char-group"><span class="char-chip">折</span><span class="char-chip">线</span></span>
+              <span class="chip">秩序</span>
+              <span class="chip">镜像</span>
+              <span class="chip hl-dark">留白</span>
+              <span class="chip">屏息</span>
+              <span class="chip">对称</span>
+            </div>
+            <div class="phrase-line">
+              <span class="char-group"><span class="char-chip">白</span><span class="char-chip xxl">墙</span><span class="char-chip">上</span><span class="char-chip">的</span><span class="char-chip xl">反</span><span class="char-chip">光</span></span>
+              <span class="comma">,</span>
+            </div>
+            <div class="player">
+              <canvas class="big-wave-canvas"></canvas>
+              <div class="player-row">
+                <button class="play-btn" type="button" aria-label="播放/暂停">
+                  <span class="icon-play"></span><span class="icon-pause"></span>
+                </button>
+                <span class="time current">0:00</span>
+                <div class="wave-progress">
+                  <div class="played"></div>
+                  <div class="playhead"></div>
+                </div>
+                <span class="time total">0:00</span>
+              </div>
+            </div>
+            <audio preload="metadata" src="./output/01-pei-geometric-minimal.wav"></audio>
+          </div>
+          <footer class="poster-footer">
+            <span class="flow-stamp">FLOW IDLE</span>
+            <div class="outro-chips">
+              <span class="char-group"><span class="char-chip">清</span><span class="char-chip">晨</span><span class="char-chip">的</span><span class="char-chip">墙</span></span>
+              <span class="chip">空气</span>
+              <span class="chip">光影斜切</span>
+            </div>
+          </footer>
+        </div>
+      </article>
+
+      <!-- ==== TRACK 02 · MONDRIAN ==== -->
+      <article class="poster" data-theme="mondrian">
+        <img class="poster-bg" src="./images/02-mondrian.jpg" alt="蒙德里安风格几何色彩建筑" />
+        <div class="poster-veil"></div>
+        <div class="poster-grain"></div>
+        <div class="poster-content">
+          <header class="poster-header">
+            <div class="left-side">
+              <span class="track-no">TRACK 02</span>
+              <h2 class="poster-title">
+                <span>色块网格</span><span class="sep">·</span><span class="en">Urban Grid Pulse</span>
+              </h2>
+            </div>
+            <div class="header-tags">
+              <span class="tag">22 sec · rhythmic</span>
+              <span class="tag live" data-on="false">water idle</span>
+            </div>
+          </header>
+          <div class="poster-mid">
+            <div class="chips">
+              <span class="char-group"><span class="char-chip">网</span><span class="char-chip">格</span></span>
+              <span class="chip hl-dark">色块</span>
+              <span class="chip">街头</span>
+              <span class="chip">切分</span>
+              <span class="chip">脉冲</span>
+              <span class="chip">霓虹</span>
+            </div>
+            <div class="phrase-line">
+              <span class="char-group"><span class="char-chip">被</span><span class="char-chip xl">切</span><span class="char-chip">开</span><span class="char-chip">的</span><span class="char-chip xxl">街</span><span class="char-chip deep">头</span><span class="char-chip">节</span><span class="char-chip">拍</span></span>
+              <span class="comma">,</span>
+            </div>
+            <div class="player">
+              <canvas class="big-wave-canvas"></canvas>
+              <div class="player-row">
+                <button class="play-btn" type="button" aria-label="播放/暂停">
+                  <span class="icon-play"></span><span class="icon-pause"></span>
+                </button>
+                <span class="time current">0:00</span>
+                <div class="wave-progress">
+                  <div class="played"></div>
+                  <div class="playhead"></div>
+                </div>
+                <span class="time total">0:00</span>
+              </div>
+            </div>
+            <audio preload="metadata" src="./output/02-mondrian-urban-grid.wav"></audio>
+          </div>
+          <footer class="poster-footer">
+            <span class="flow-stamp">FLOW IDLE</span>
+            <div class="outro-chips">
+              <span class="char-group"><span class="char-chip">下</span><span class="char-chip">午</span><span class="char-chip">四</span><span class="char-chip">点</span></span>
+              <span class="chip">路口</span>
+              <span class="chip">都市心跳</span>
+            </div>
+          </footer>
+        </div>
+      </article>
+
+      <!-- ==== TRACK 03 · ARANYA ==== -->
+      <article class="poster" data-theme="aranya">
+        <img class="poster-bg" src="./images/03-aranya.jpg" alt="阿那亚礼堂清晨" />
+        <div class="poster-veil"></div>
+        <div class="poster-grain"></div>
+        <div class="poster-content">
+          <header class="poster-header">
+            <div class="left-side">
+              <span class="track-no">TRACK 03</span>
+              <h2 class="poster-title">
+                <span>黎明礼堂</span><span class="sep">·</span><span class="en">Dawn Chapel Ambient</span>
+              </h2>
+            </div>
+            <div class="header-tags">
+              <span class="tag">28 sec · ambient</span>
+              <span class="tag live" data-on="false">water idle</span>
+            </div>
+          </header>
+          <div class="poster-mid">
+            <div class="chips">
+              <span class="char-group"><span class="char-chip">尖</span><span class="char-chip">顶</span></span>
+              <span class="chip">台阶</span>
+              <span class="chip">海边</span>
+              <span class="chip hl-dark">孤独</span>
+              <span class="chip">浪漫</span>
+              <span class="chip">晨雾</span>
+            </div>
+            <div class="chips">
+              <span class="chip">慢波</span>
+              <span class="chip">长尾回响</span>
+              <span class="chip">大范围扩散</span>
+            </div>
+            <div class="phrase-line">
+              <span class="char-group"><span class="char-chip">回</span><span class="char-chip xxl">声</span><span class="char-chip">中</span><span class="char-chip xl">的</span><span class="char-chip deep">水</span></span>
+              <span class="comma">,</span>
+            </div>
+            <div class="player">
+              <canvas class="big-wave-canvas"></canvas>
+              <div class="player-row">
+                <button class="play-btn" type="button" aria-label="播放/暂停">
+                  <span class="icon-play"></span><span class="icon-pause"></span>
+                </button>
+                <span class="time current">0:00</span>
+                <div class="wave-progress">
+                  <div class="played"></div>
+                  <div class="playhead"></div>
+                </div>
+                <span class="time total">0:00</span>
+              </div>
+            </div>
+            <audio preload="metadata" src="./output/03-aranya-dawn-chapel.wav"></audio>
+          </div>
+          <footer class="poster-footer">
+            <span class="flow-stamp">FLOW IDLE</span>
+            <div class="outro-chips">
+              <span class="char-group"><span class="char-chip">清</span><span class="char-chip">晨</span><span class="char-chip">五</span><span class="char-chip">点</span></span>
+              <span class="chip">留白</span>
+              <span class="chip">上行</span>
+              <span class="chip">回响空间</span>
+            </div>
+          </footer>
+        </div>
+      </article>
+
+      <!-- ==== TRACK 04 · MAD ==== -->
+      <article class="poster" data-theme="mad">
+        <img class="poster-bg" src="./images/04-mad.jpg" alt="MAD 有机曲面建筑鸟瞰" />
+        <div class="poster-veil"></div>
+        <div class="poster-grain"></div>
+        <div class="poster-content">
+          <header class="poster-header">
+            <div class="left-side">
+              <span class="track-no">TRACK 04</span>
+              <h2 class="poster-title">
+                <span>有机曲面</span><span class="sep">·</span><span class="en">Organic Flow</span>
+              </h2>
+            </div>
+            <div class="header-tags">
+              <span class="tag">32 sec · organic</span>
+              <span class="tag live" data-on="false">water idle</span>
+            </div>
+          </header>
+          <div class="poster-mid">
+            <div class="chips">
+              <span class="char-group"><span class="char-chip">伞</span><span class="char-chip">盖</span></span>
+              <span class="chip">生长</span>
+              <span class="chip">放射</span>
+              <span class="chip hl-dark">呼吸</span>
+              <span class="chip">鸟瞰</span>
+              <span class="chip">无直角</span>
+            </div>
+            <div class="phrase-line">
+              <span class="char-group"><span class="char-chip">正</span><span class="char-chip xl">在</span><span class="char-chip">打</span><span class="char-chip xxl">开</span><span class="char-chip">的</span><span class="char-chip deep">手</span></span>
+              <span class="comma">,</span>
+            </div>
+            <div class="player">
+              <canvas class="big-wave-canvas"></canvas>
+              <div class="player-row">
+                <button class="play-btn" type="button" aria-label="播放/暂停">
+                  <span class="icon-play"></span><span class="icon-pause"></span>
+                </button>
+                <span class="time current">0:00</span>
+                <div class="wave-progress">
+                  <div class="played"></div>
+                  <div class="playhead"></div>
+                </div>
+                <span class="time total">0:00</span>
+              </div>
+            </div>
+            <audio preload="metadata" src="./output/04-mad-organic-flow.wav"></audio>
+          </div>
+          <footer class="poster-footer">
+            <span class="flow-stamp">FLOW IDLE</span>
+            <div class="outro-chips">
+              <span class="char-group"><span class="char-chip">一</span><span class="char-chip">次</span><span class="char-chip">打</span><span class="char-chip">开</span></span>
+              <span class="chip">远处</span>
+              <span class="chip">呼吸变慢</span>
+            </div>
+          </footer>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- ==== 底部上传入口 ==== -->
+    <section class="uploader" id="uploader">
+      <div class="eyebrow">Upload · Your Own Building</div>
+      <h3>把你的一张建筑图，变成一段音乐</h3>
+      <p class="hint">拖拽一张图进来，或点下面按钮。我会读一读它的光影 / 颜色 / 纹理，在你的浏览器里现场为它合成一首。</p>
+      <input type="file" id="upload-input" accept="image/*" />
+      <button class="upload-btn" id="upload-btn">选择图片</button>
+      <div class="upload-status" id="upload-status"></div>
+    </section>
+
+    <footer class="site-foot">
+      <span>建筑 × 声音 · poster edition</span>
+      <span>另见 <a href="./index.html">collage 拼贴版</a> · <a href="./editorial.html">editorial 书页版</a> · <a href="./original.html">original 最初版</a></span>
+    </footer>
+  </main>
+
+  <!-- ==== 统一卡片弹窗 ==== -->
+  <div class="card-modal" id="card-modal" role="dialog" aria-modal="true">
+    <div class="card-paper">
+      <button class="card-close" id="card-close" aria-label="关闭">×</button>
+      <div class="card-eyebrow" id="card-eyebrow">— A Note on —</div>
+      <h3 class="card-word" id="card-word">词 <span class="mini">from Track</span></h3>
+      <div class="card-body" id="card-body">正在打开…</div>
+      <div class="card-foot">
+        <span id="card-foot-left">建筑 × 声音</span>
+        <span class="play-cue" id="card-play-cue">点此试听 →</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const AC = window.AudioContext || window.webkitAudioContext;
+    const audioCtx = AC ? new AC() : null;
+    const allAudios = [...document.querySelectorAll('audio')];
+
+    document.querySelectorAll('.poster').forEach((poster) => {
+      const audio = poster.querySelector('audio');
+      const playBtn = poster.querySelector('.play-btn');
+      const timeCur = poster.querySelector('.time.current');
+      const timeTot = poster.querySelector('.time.total');
+      const progWrap = poster.querySelector('.wave-progress');
+      const playedEl = poster.querySelector('.wave-progress .played');
+      const playheadEl = poster.querySelector('.wave-progress .playhead');
+      const canvas = poster.querySelector('.big-wave-canvas');
+      const cctx = canvas.getContext('2d');
+      const liveTag = poster.querySelector('.tag.live');
+      const stamp = poster.querySelector('.flow-stamp');
+
+      let w = 0, h = 0;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+      // 每 track 的"音乐签名曲线"：预解析 wav 得到响度包络 → 产生一条固定的 Bezier 曲线
+      // 曲线高度：高频剧烈起伏 = 音乐陡峭；高低差小 = 音乐柔和
+      const SAMPLES = 220; // 曲线上有多少个采样点
+      let curve = null;    // 预解析出的 [0..1] 数组，长度 = SAMPLES
+      let curveReady = false;
+
+      async function loadCurve(src) {
+        try {
+          const resp = await fetch(src);
+          const buf = await resp.arrayBuffer();
+          const decoded = await audioCtx.decodeAudioData(buf.slice(0));
+          const ch = decoded.getChannelData(0);
+          const blockSize = Math.max(1, Math.floor(ch.length / SAMPLES));
+          const arr = new Array(SAMPLES);
+          let maxVal = 0;
+          for (let i = 0; i < SAMPLES; i += 1) {
+            let sum = 0;
+            const start = i * blockSize;
+            const end = Math.min(ch.length, start + blockSize);
+            for (let j = start; j < end; j += 1) sum += Math.abs(ch[j]);
+            arr[i] = sum / Math.max(1, end - start);
+            if (arr[i] > maxVal) maxVal = arr[i];
+          }
+          // 归一化 + 轻度非线性（强调对比）
+          for (let i = 0; i < SAMPLES; i += 1) {
+            const v = maxVal > 0 ? arr[i] / maxVal : 0;
+            arr[i] = Math.pow(v, 0.75);
+          }
+          curve = arr;
+          curveReady = true;
+        } catch (e) {
+          // 解析失败（比如 CORS 或未加载），退化成一条低幅度随机波
+          const arr = new Array(SAMPLES);
+          let seed = (poster.dataset.theme || 'x').split('').reduce((a, c) => a + c.charCodeAt(0), 0) + 7;
+          const r = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+          for (let i = 0; i < SAMPLES; i += 1) arr[i] = 0.3 + r() * 0.4;
+          curve = arr;
+          curveReady = true;
+        }
+      }
+
+      // 异步加载，不阻塞其它渲染
+      if (audioCtx) loadCurve(audio.getAttribute('src'));
+
+      function resize() {
+        const r = canvas.getBoundingClientRect();
+        w = r.width;
+        h = r.height;
+        canvas.width = Math.max(1, Math.floor(w * dpr));
+        canvas.height = Math.max(1, Math.floor(h * dpr));
+        cctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      let analyser = null, source = null, freqData = null, ready = false;
+      function ensureGraph() {
+        if (!audioCtx || ready) return;
+        try {
+          source = audioCtx.createMediaElementSource(audio);
+          analyser = audioCtx.createAnalyser();
+          analyser.fftSize = 128;
+          analyser.smoothingTimeConstant = 0.84;
+          freqData = new Uint8Array(analyser.frequencyBinCount);
+          source.connect(analyser);
+          analyser.connect(audioCtx.destination);
+          ready = true;
+        } catch (e) { /* already connected */ }
+      }
+
+      function getEnergy() {
+        if (!analyser || !freqData) return 0;
+        analyser.getByteFrequencyData(freqData);
+        let s = 0;
+        for (let i = 0; i < freqData.length; i += 1) s += freqData[i];
+        return (s / freqData.length) / 255;
+      }
+
+      let smooth = 0;
+
+      // 曲线采样 → 画布坐标转换（curve[i] ∈ [0,1] 映射到 canvas y）
+      function curveY(i, midY, maxUp) {
+        const v = curve[i]; // 0~1
+        // 让曲线有上有下：以 curve[i] 的均值为基线偏差
+        const avg = 0.45; // 经验值
+        const dy = (v - avg) * maxUp * 1.2;
+        return midY - dy;
+      }
+
+      function drawCurve(t) {
+        if (!w || !h) { requestAnimationFrame(drawCurve); return; }
+        cctx.clearRect(0, 0, w, h);
+        const playing = !audio.paused && !audio.ended;
+        const energy = playing ? getEnergy() : 0;
+        smooth = smooth * 0.8 + energy * 0.2;
+
+        const progress = audio.duration > 0 ? Math.min(1, audio.currentTime / audio.duration) : 0;
+        // canvas 向上溢出 60px，视觉中心略偏下
+        const midY = h * 0.62;
+        const maxUp = h * 0.78; // 曲线纵向空间：收回到 78%，既夸张又不盖掉拼贴诗
+        const phase = t * 0.0012;
+
+        if (!curveReady || !curve) {
+          // 加载中：显示一条细的脉动线
+          cctx.beginPath();
+          cctx.moveTo(0, midY);
+          cctx.lineTo(w, midY);
+          cctx.strokeStyle = 'rgba(240, 217, 160, 0.18)';
+          cctx.lineWidth = 1;
+          cctx.stroke();
+          if (playedEl) playedEl.style.width = (progress * 100).toFixed(2) + '%';
+          if (playheadEl) playheadEl.style.left = (progress * 100).toFixed(2) + '%';
+          requestAnimationFrame(drawCurve);
+          return;
+        }
+
+        const n = curve.length;
+        // 进度在曲线上的位置（浮点）
+        const progIdx = progress * (n - 1);
+
+        // 构造 x,y 点集（带很轻的"呼吸"微扰，让曲线有一点生气）
+        const pts = new Array(n);
+        for (let i = 0; i < n; i += 1) {
+          const x = (i / (n - 1)) * w;
+          const breathe = playing ? Math.sin(phase * 2 + i * 0.18) * 1.5 : 0;
+          pts[i] = { x, y: curveY(i, midY, maxUp) + breathe };
+        }
+
+        // ——— 1. 未播放部分：淡色虚线预告 ———
+        cctx.save();
+        cctx.setLineDash([4, 5]);
+        cctx.strokeStyle = 'rgba(200, 185, 140, 0.28)';
+        cctx.lineWidth = 1;
+        cctx.lineCap = 'round';
+        cctx.beginPath();
+        const startIdx = Math.max(0, Math.floor(progIdx));
+        // 用 Catmull-Rom → Bezier 让曲线圆滑
+        for (let i = startIdx; i < n - 1; i += 1) {
+          const p0 = pts[Math.max(0, i - 1)];
+          const p1 = pts[i];
+          const p2 = pts[i + 1];
+          const p3 = pts[Math.min(n - 1, i + 2)];
+          if (i === startIdx) cctx.moveTo(p1.x, p1.y);
+          const cp1x = p1.x + (p2.x - p0.x) / 6;
+          const cp1y = p1.y + (p2.y - p0.y) / 6;
+          const cp2x = p2.x - (p3.x - p1.x) / 6;
+          const cp2y = p2.y - (p3.y - p1.y) / 6;
+          cctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, p2.x, p2.y);
+        }
+        cctx.stroke();
+        cctx.restore();
+
+        // ——— 2. 已播放部分：金色粗描 + 发光，保留整段轨迹 ———
+        // 绘制分两层：外层大模糊光晕 + 内层清晰金线
+        const drawSolidPath = (lineWidth, color, blur) => {
+          cctx.save();
+          cctx.lineJoin = 'round';
+          cctx.lineCap = 'round';
+          cctx.strokeStyle = color;
+          cctx.lineWidth = lineWidth;
+          if (blur) {
+            cctx.shadowColor = 'rgba(245, 210, 140, 0.9)';
+            cctx.shadowBlur = blur;
+          }
+          cctx.beginPath();
+          const endIdx = Math.max(0, Math.min(n - 1, Math.floor(progIdx)));
+          if (endIdx >= 1) {
+            cctx.moveTo(pts[0].x, pts[0].y);
+            for (let i = 0; i < endIdx; i += 1) {
+              const p0 = pts[Math.max(0, i - 1)];
+              const p1 = pts[i];
+              const p2 = pts[i + 1];
+              const p3 = pts[Math.min(n - 1, i + 2)];
+              const cp1x = p1.x + (p2.x - p0.x) / 6;
+              const cp1y = p1.y + (p2.y - p0.y) / 6;
+              const cp2x = p2.x - (p3.x - p1.x) / 6;
+              const cp2y = p2.y - (p3.y - p1.y) / 6;
+              cctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, p2.x, p2.y);
+            }
+            // 补到播放头精确位置
+            const frac = progIdx - endIdx;
+            if (frac > 0 && endIdx < n - 1) {
+              const p0 = pts[Math.max(0, endIdx - 1)];
+              const p1 = pts[endIdx];
+              const p2 = pts[endIdx + 1];
+              const p3 = pts[Math.min(n - 1, endIdx + 2)];
+              // 线性插值到 frac 位置（近似，足够平滑）
+              const ix = p1.x + (p2.x - p1.x) * frac;
+              const iy = p1.y + (p2.y - p1.y) * frac;
+              const cp1x = p1.x + (p2.x - p0.x) / 6;
+              const cp1y = p1.y + (p2.y - p0.y) / 6;
+              const cp2x = ix - (p3.x - p1.x) / 6 * frac;
+              const cp2y = iy - (p3.y - p1.y) / 6 * frac;
+              cctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, ix, iy);
+            }
+          }
+          cctx.stroke();
+          cctx.restore();
+        };
+
+        // 外层宽金光（辉光底）
+        drawSolidPath(
+          playing ? (7 + smooth * 4) : 5,
+          'rgba(245, 210, 140, ' + (playing ? (0.28 + smooth * 0.18) : 0.2).toFixed(3) + ')',
+          playing ? (14 + smooth * 12) : 8
+        );
+        // 中层清晰金线
+        drawSolidPath(
+          playing ? (2 + smooth * 1.2) : 1.8,
+          'rgba(250, 230, 170, ' + (0.95).toFixed(3) + ')',
+          0
+        );
+
+        // ——— 3. 播放头：金色圆点 + 光晕 ———
+        {
+          // 插值当前位置
+          const endIdx = Math.max(0, Math.min(n - 1, Math.floor(progIdx)));
+          const frac = progIdx - endIdx;
+          const p1 = pts[endIdx];
+          const p2 = pts[Math.min(n - 1, endIdx + 1)];
+          const hx = p1.x + (p2.x - p1.x) * frac;
+          const hy = p1.y + (p2.y - p1.y) * frac;
+
+          // 外光晕
+          if (playing) {
+            const g = cctx.createRadialGradient(hx, hy, 0, hx, hy, 22 + smooth * 14);
+            g.addColorStop(0, 'rgba(255, 235, 180, ' + (0.55 + smooth * 0.3).toFixed(3) + ')');
+            g.addColorStop(1, 'rgba(255, 235, 180, 0)');
+            cctx.fillStyle = g;
+            cctx.beginPath();
+            cctx.arc(hx, hy, 22 + smooth * 14, 0, Math.PI * 2);
+            cctx.fill();
+          }
+          // 圆点
+          cctx.beginPath();
+          cctx.arc(hx, hy, playing ? (5 + smooth * 2) : 4, 0, Math.PI * 2);
+          cctx.fillStyle = '#f5eed8';
+          cctx.fill();
+          cctx.lineWidth = 1.5;
+          cctx.strokeStyle = 'rgba(20, 20, 20, 0.5)';
+          cctx.stroke();
+
+          // 把 DOM 播放头也同步到曲线位置（覆盖水平线上的位置）
+          if (playheadEl) {
+            playheadEl.style.left = (progress * 100).toFixed(2) + '%';
+            playheadEl.style.top = ((hy / h) * 100).toFixed(2) + '%';
+          }
+        }
+
+        // ——— 4. 水花飞溅（播放时） ———
+        if (playing) {
+          for (let k = 0; k < 5; k += 1) {
+            const rx = (Math.sin(phase * 2 + k * 1.7) * 0.5 + 0.5) * progress * w;
+            const ry = midY - 50 - Math.abs(Math.sin(phase * 3 + k)) * 40;
+            const rr = 1 + Math.abs(Math.sin(phase * 4 + k * 2)) * 3;
+            cctx.beginPath();
+            cctx.arc(rx, ry, rr, 0, Math.PI * 2);
+            cctx.fillStyle = 'rgba(250, 230, 170, ' + (0.28 + smooth * 0.4).toFixed(3) + ')';
+            cctx.fill();
+          }
+        }
+
+        // 底部进度条填充（DOM）
+        if (playedEl) playedEl.style.width = (progress * 100).toFixed(2) + '%';
+
+        requestAnimationFrame(drawCurve);
+      }
+
+      function fmt(sec) {
+        if (!isFinite(sec) || sec < 0) return '0:00';
+        const m = Math.floor(sec / 60);
+        const s = Math.floor(sec % 60);
+        return m + ':' + (s < 10 ? '0' + s : s);
+      }
+      function syncTimes() {
+        timeCur.textContent = fmt(audio.currentTime);
+        timeTot.textContent = fmt(audio.duration);
+      }
+
+      resize();
+      requestAnimationFrame(drawCurve);
+      window.addEventListener('resize', resize);
+
+      audio.addEventListener('loadedmetadata', syncTimes);
+      audio.addEventListener('timeupdate', syncTimes);
+
+      playBtn.addEventListener('click', () => {
+        if (audio.paused) audio.play();
+        else audio.pause();
+      });
+
+      progWrap.addEventListener('click', (e) => {
+        if (!audio.duration) return;
+        const r = progWrap.getBoundingClientRect();
+        const ratio = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+        audio.currentTime = ratio * audio.duration;
+      });
+
+      audio.addEventListener('play', async () => {
+        allAudios.forEach((a) => { if (a !== audio) a.pause(); });
+        if (audioCtx) { await audioCtx.resume(); ensureGraph(); }
+        poster.classList.add('is-playing');
+        if (liveTag) { liveTag.dataset.on = 'true'; liveTag.textContent = 'water active'; }
+        if (stamp) stamp.textContent = 'FLOW ACTIVE';
+      });
+
+      ['pause', 'ended'].forEach((ev) => {
+        audio.addEventListener(ev, () => {
+          poster.classList.remove('is-playing');
+          if (liveTag) { liveTag.dataset.on = 'false'; liveTag.textContent = 'water idle'; }
+          if (stamp) stamp.textContent = 'FLOW IDLE';
+        });
+      });
+    });
+
+    // ============================================================
+    // 卡片弹窗：所有贴纸可点
+    // ============================================================
+    const modal = document.getElementById('card-modal');
+    const cardClose = document.getElementById('card-close');
+    const cardEyebrow = document.getElementById('card-eyebrow');
+    const cardWord = document.getElementById('card-word');
+    const cardBody = document.getElementById('card-body');
+    const cardFootLeft = document.getElementById('card-foot-left');
+    const cardPlayCue = document.getElementById('card-play-cue');
+
+    // 叙事库：key = 词，value = 2 行左右的诗歌式解读
+    const WORD_NOTES = {
+      // —— pei · 几何白墙 ——
+      '折线': '它不是一条直线，是光斜着落下来时，被墙折过的那一段路。\n音乐在这里也只折一次，然后安静下来。',
+      '秩序': '这栋楼里，没有一寸是随便的。\n所以我也没让音符乱走——它们照着墙的格子，一步一步。',
+      '镜像': '你对着白墙说了一句话，\n白墙把它原样还给你——只是比你说出口的时候，再轻一点。',
+      '留白': '最重要的那一笔，是没写出来的那一笔。\n你以为是我没写完，其实是我留给风的位置。',
+      '屏息': '这栋建筑一直屏着气，\n像等一个还没走进来的人，等得很有耐心。',
+      '对称': '左边的音是右边那个音的影子，\n它们一起出现，又一起消失——谁也不肯先开口。',
+      '低光': '它不需要太亮。\n够看清自己的影子，就刚刚好。',
+      '白墙上的反光': '不是声音在发光，\n是声音被墙反了一下，然后你刚好转过头。',
+      '清晨的墙': '墙在清晨其实是醒着的，\n只是装作还没醒，像你周一早上那样。',
+      '空气': '我留了很多不说话的时间，\n是为了让那些音，有机会互相听见。',
+      '光影斜切': '光从高处下来，斜斜地落在台阶上，\n像一段被轻轻折起来、没拆开的旋律。',
+      '几何秩序': '规矩不是束缚，\n是一条让声音安心走路的线——走到哪一步会发生什么，它心里有数。',
+
+      // —— mondrian · 色块网格 ——
+      '网格': '城市是一张不停切分的网，\n你走在里面，也被它切过一刀一刀——你自己可能都没发觉。',
+      '色块': '红、黄、蓝不讲道理地堆在一起，\n像一个下午你同时收到的三条消息，语气都不一样。',
+      '街头': '你真正听见这栋楼的那一刻，\n其实是在马路对面——不是在它面前。',
+      '切分': '节拍被剪开了，\n像地铁门合上的那一声，和你刚要说的一句话。',
+      '脉冲': '心跳比旋律更早到现场。\n它不解释，它就在那里一下一下地跳。',
+      '霓虹': '天快黑的时候，颜色会自己发光，\n不用谁提醒——它们等这一刻，等了一整个下午。',
+      '交错': '这个路口没有主角。\n所有人同时登场，又同时各自往不同的方向离开。',
+      '被切开的街头节拍': '它不是一栋建筑，更像一个路口的声音被谁按了录音键——\n有人在按喇叭，有人在过马路，有人在抬头看这面突然跳出来的墙。',
+      '下午四点': '最不诗意的那一个钟点。\n光斜，人多，世界有一点点吵——但你偏偏会记得它很久。',
+      '路口': '所有故事都会在这里撞一下，\n然后各自去往各自的方向，像什么都没发生过。',
+      '都市心跳': '你以为是你心跳在变快，\n其实是这座城市的节拍，正悄悄地带着你走。',
+      '斑马线': '被画得最清楚的那一块地方，\n往往也最容易被人踩花——声音也是。',
+
+      // —— aranya · 黎明礼堂 ——
+      '尖顶': '它一直往上走，\n像一个替还没醒来的人，先问一句天的人。',
+      '台阶': '每一级都是一个停顿，\n一个"我还没准备好"——但脚已经自己抬起来了。',
+      '海边': '海从不插话，\n它只是在那里——你说什么它都先听着。',
+      '孤独': '不是没有人，\n是你终于能听见自己的声音走出去，又走回来。',
+      '浪漫': '连海风都是慢的，\n像有人在替你呼吸，不慌不忙。',
+      '晨雾': '雾是给声音穿的一件外套，\n让它们不至于一出门就被风吹走。',
+      '钟声': '你以为它响完了，\n它在三秒之后，又回来找你一次——比你记得它更久。',
+      '回声中的水': '你开口说的话走出去以后，\n被谁轻轻推回来了一次——你没看清是谁，但心里安稳了。',
+      '清晨五点': '连风都是慢的，\n像还没完全醒来的人，走路的时候怕吵到谁。',
+      '上行': '声音顺着台阶一级一级往上走，\n不回头——它知道自己要去哪里，尽管你不知道。',
+      '回响空间': '你说的话，\n永远比你自己以为的，走得再远一点点。',
+      '海风': '它不写词，\n它只是帮你把话带走——带到那个你自己去不了的地方。',
+
+      // —— mad · 有机曲面 ——
+      '伞盖': '它从上面罩下来，\n像一个替你挡着什么的人——你不一定抬头，但知道它在。',
+      '生长': '这栋楼不是被造出来的，\n是长出来的——每一根线都在它自己的节奏里呼吸。',
+      '放射': '有一根中心音一直不走，\n剩下的声音都从它身上往外跑，又在远处轻轻回来。',
+      '呼吸': '你会发现自己的呼吸变慢了——\n那不是你在放松，是这栋楼替你做了那件事。',
+      '鸟瞰': '从很高的地方往下看，\n一栋楼变成了一朵花——你忽然忘了自己是在看建筑。',
+      '无直角': '这里没有一个角是锐的，\n它不想让你受伤，连风也不行。',
+      '慢绽放': '它不是一次性地打开，\n是一次一次，一层一层——像你终于学会慢下来的那一天。',
+      '正在打开的手': '从高空看下去，它不像建筑，\n更像一只正在慢慢张开的手——你不用怕，它不会合上。',
+      '一次打开': '整首歌只写了一个动作——"打开"。\n没有旋律，没有结尾，只有这一次。',
+      '远处': '声音走得很远，\n还在走——你还没意识到，它已经不属于这个房间了。',
+      '呼吸变慢': '你会比它先慢下来。\n你以为是你主动的，其实不是。',
+      '骨头': '建筑里有一根一直不走的音——\n它不动，其他的才敢走——就像有些人，在你身边只是不说话，你才敢大声。',
+    };
+
+    function openCard(word, trackName) {
+      const note = WORD_NOTES[word] || '这个词没有留下注脚。也许它想保留一点秘密。';
+      cardEyebrow.textContent = '— A Note on ' + trackName + ' —';
+      cardWord.innerHTML = word + ' <span class="mini">from ' + trackName + '</span>';
+      cardBody.textContent = note;
+      cardFootLeft.textContent = trackName;
+      modal.classList.add('open');
+    }
+
+    function closeCard() {
+      modal.classList.remove('open');
+    }
+
+    cardClose.addEventListener('click', closeCard);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeCard();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeCard();
+    });
+
+    // 给所有贴纸（chip 和 char-chip）绑定点击 → 翻转 + 弹卡片
+    function bindChipClicks(root) {
+      const chips = root.querySelectorAll('.chip, .char-chip');
+      chips.forEach((el) => {
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          // 翻转动画
+          el.classList.remove('is-flipping');
+          void el.offsetWidth; // 强制 reflow，允许连点
+          el.classList.add('is-flipping');
+          // 获取词：char-chip 是单字，需要向上找 char-group 的完整词
+          let word;
+          if (el.classList.contains('char-chip')) {
+            const group = el.closest('.char-group');
+            word = group ? [...group.querySelectorAll('.char-chip')].map(c => c.textContent).join('') : el.textContent;
+          } else {
+            word = el.textContent.trim();
+          }
+          // 找到所在 track 名称
+          const poster = el.closest('.poster');
+          const titleEl = poster ? poster.querySelector('.poster-title') : null;
+          const trackName = titleEl
+            ? (titleEl.querySelector('span:not(.sep):not(.en)')?.textContent || 'Track')
+            : 'Track';
+          // 延迟 0.28s，让翻转到中间再弹卡片
+          setTimeout(() => openCard(word, trackName), 280);
+        });
+      });
+    }
+    bindChipClicks(document);
+
+    // ============================================================
+    // 上传入口：图片 → 合成 ambient → 注入新海报
+    // ============================================================
+    const upInput = document.getElementById('upload-input');
+    const upBtn = document.getElementById('upload-btn');
+    const upStatus = document.getElementById('upload-status');
+    const upBox = document.getElementById('uploader');
+
+    upBtn.addEventListener('click', () => upInput.click());
+    upInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) handleImage(e.target.files[0]);
+    });
+
+    ['dragenter', 'dragover'].forEach(ev => upBox.addEventListener(ev, (e) => {
+      e.preventDefault();
+      upBox.classList.add('dragover');
+    }));
+    ['dragleave', 'drop'].forEach(ev => upBox.addEventListener(ev, (e) => {
+      e.preventDefault();
+      upBox.classList.remove('dragover');
+    }));
+    upBox.addEventListener('drop', (e) => {
+      const f = e.dataTransfer.files?.[0];
+      if (f && f.type.startsWith('image/')) handleImage(f);
+    });
+
+    async function handleImage(file) {
+      upStatus.textContent = '读取图片中…';
+      try {
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+        img.src = url;
+        await new Promise((res, rej) => { img.onload = res; img.onerror = rej; });
+        upStatus.textContent = '分析光影 / 颜色 / 纹理…';
+        const feat = analyzeImage(img);
+        upStatus.textContent = '合成音乐中…这会需要几秒';
+        const wavBlob = await synthesizeMusic(feat);
+        const audioUrl = URL.createObjectURL(wavBlob);
+        upStatus.textContent = '生成完成 · 已插入下方';
+        injectUserPoster(url, audioUrl, feat);
+        setTimeout(() => { upStatus.textContent = ''; }, 3000);
+      } catch (err) {
+        console.error(err);
+        upStatus.textContent = '生成失败：' + (err.message || err);
+      }
+    }
+
+    // —— 图片特征提取：亮度 / 饱和度 / 边缘密度 / 主色调 / 色温 ——
+    function analyzeImage(img) {
+      const c = document.createElement('canvas');
+      const size = 200;
+      c.width = size;
+      c.height = size;
+      const cx = c.getContext('2d');
+      cx.drawImage(img, 0, 0, size, size);
+      const data = cx.getImageData(0, 0, size, size).data;
+
+      let rSum = 0, gSum = 0, bSum = 0, brightSum = 0, satSum = 0;
+      let px = 0;
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i], g = data[i+1], b = data[i+2];
+        rSum += r; gSum += g; bSum += b;
+        const max = Math.max(r, g, b), min = Math.min(r, g, b);
+        brightSum += (max + min) / 2;
+        satSum += max === 0 ? 0 : (max - min) / max;
+        px += 1;
+      }
+      const rAvg = rSum / px, gAvg = gSum / px, bAvg = bSum / px;
+      const brightness = brightSum / px / 255; // 0~1
+      const saturation = satSum / px; // 0~1
+      // 色温：R 主导 = warm，B 主导 = cool
+      const warmth = (rAvg - bAvg) / 255; // -1~1
+
+      // 边缘密度：简单 sobel 估计
+      let edges = 0;
+      for (let y = 1; y < size - 1; y += 2) {
+        for (let x = 1; x < size - 1; x += 2) {
+          const idx = (y * size + x) * 4;
+          const cur = data[idx];
+          const right = data[idx + 4];
+          const down = data[idx + size * 4];
+          edges += Math.abs(cur - right) + Math.abs(cur - down);
+        }
+      }
+      const edgeDensity = Math.min(1, edges / (size * size * 30));
+
+      return { brightness, saturation, warmth, edgeDensity, rAvg, gAvg, bAvg };
+    }
+
+    // —— 用 OfflineAudioContext 程序化合成 24s ambient ——
+    async function synthesizeMusic(feat) {
+      const duration = 24;
+      const sampleRate = 44100;
+      const offline = new OfflineAudioContext(1, Math.floor(duration * sampleRate), sampleRate);
+
+      // 基础音：根据亮度选基频（暗 → 低，亮 → 高）
+      const baseFreq = 110 + feat.brightness * 160; // 110~270Hz
+      // 和弦选型：饱和度高用大三度堆叠，饱和度低用纯四/五度
+      const chord = feat.saturation > 0.3
+        ? [1, 1.189, 1.414, 2] // 小三和弦 + 高八度
+        : [1, 1.335, 1.498, 2];
+      // 节拍：边缘密度高 = 节奏密，edgeDensity 高 = 每秒 1~3 次脉冲
+      const pulseRate = 0.6 + feat.edgeDensity * 2.4; // 0.6~3 Hz
+
+      chord.forEach((mult, idx) => {
+        const osc = offline.createOscillator();
+        osc.type = feat.warmth > 0 ? 'triangle' : 'sine';
+        osc.frequency.value = baseFreq * mult;
+
+        // 按节拍做 AM 调幅
+        const lfo = offline.createOscillator();
+        lfo.frequency.value = pulseRate * (0.5 + idx * 0.25);
+        const lfoGain = offline.createGain();
+        lfoGain.gain.value = 0.15;
+        lfo.connect(lfoGain);
+
+        const gain = offline.createGain();
+        gain.gain.value = 0.12 / chord.length;
+        lfoGain.connect(gain.gain);
+
+        // 包络：淡入淡出
+        gain.gain.setValueAtTime(0.001, 0);
+        gain.gain.exponentialRampToValueAtTime(0.12 / chord.length, 2.5);
+        gain.gain.setValueAtTime(0.12 / chord.length, duration - 4);
+        gain.gain.exponentialRampToValueAtTime(0.001, duration - 0.1);
+
+        osc.connect(gain).connect(offline.destination);
+        osc.start(0);
+        lfo.start(0);
+        osc.stop(duration);
+        lfo.stop(duration);
+      });
+
+      // 颗粒感噪声：饱和度高时加一点点高频白噪声
+      if (feat.saturation > 0.2) {
+        const noiseBuf = offline.createBuffer(1, Math.floor(duration * sampleRate), sampleRate);
+        const nd = noiseBuf.getChannelData(0);
+        for (let i = 0; i < nd.length; i += 1) nd[i] = (Math.random() * 2 - 1) * 0.04 * feat.saturation;
+        const nsrc = offline.createBufferSource();
+        nsrc.buffer = noiseBuf;
+        const ng = offline.createGain();
+        ng.gain.value = 0.08;
+        ng.gain.setValueAtTime(0.001, 0);
+        ng.gain.linearRampToValueAtTime(0.08, 3);
+        ng.gain.setValueAtTime(0.08, duration - 4);
+        ng.gain.linearRampToValueAtTime(0.001, duration);
+        nsrc.connect(ng).connect(offline.destination);
+        nsrc.start(0);
+      }
+
+      const rendered = await offline.startRendering();
+      return audioBufferToWavBlob(rendered);
+    }
+
+    // —— 把 AudioBuffer 编码成 WAV Blob ——
+    function audioBufferToWavBlob(ab) {
+      const ch = ab.numberOfChannels;
+      const sr = ab.sampleRate;
+      const len = ab.length * ch * 2 + 44;
+      const buf = new ArrayBuffer(len);
+      const view = new DataView(buf);
+      // RIFF
+      [0x52, 0x49, 0x46, 0x46].forEach((b, i) => view.setUint8(i, b));
+      view.setUint32(4, len - 8, true);
+      [0x57, 0x41, 0x56, 0x45, 0x66, 0x6d, 0x74, 0x20].forEach((b, i) => view.setUint8(8 + i, b));
+      view.setUint32(16, 16, true);
+      view.setUint16(20, 1, true);
+      view.setUint16(22, ch, true);
+      view.setUint32(24, sr, true);
+      view.setUint32(28, sr * ch * 2, true);
+      view.setUint16(32, ch * 2, true);
+      view.setUint16(34, 16, true);
+      [0x64, 0x61, 0x74, 0x61].forEach((b, i) => view.setUint8(36 + i, b));
+      view.setUint32(40, ab.length * ch * 2, true);
+      let offset = 44;
+      for (let i = 0; i < ab.length; i += 1) {
+        for (let c = 0; c < ch; c += 1) {
+          let s = Math.max(-1, Math.min(1, ab.getChannelData(c)[i]));
+          view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true);
+          offset += 2;
+        }
+      }
+      return new Blob([buf], { type: 'audio/wav' });
+    }
+
+    // —— 根据特征生成关键词和文案 ——
+    function describeFeat(feat) {
+      const words = [];
+      if (feat.brightness > 0.6) words.push('明亮');
+      else if (feat.brightness < 0.35) words.push('幽暗');
+      else words.push('微光');
+      if (feat.saturation > 0.4) words.push('浓烈');
+      else if (feat.saturation < 0.2) words.push('克制');
+      else words.push('温和');
+      if (feat.warmth > 0.08) words.push('暖调');
+      else if (feat.warmth < -0.08) words.push('冷调');
+      else words.push('中性');
+      if (feat.edgeDensity > 0.5) words.push('密纹');
+      else if (feat.edgeDensity < 0.25) words.push('空旷');
+      else words.push('留白');
+      words.push('专属');
+      words.push('一张图');
+      return words;
+    }
+
+    // —— 动态插入一张用户海报 ——
+    let userCount = 0;
+    function injectUserPoster(imgUrl, audioUrl, feat) {
+      userCount += 1;
+      const words = describeFeat(feat);
+      const postersSec = document.querySelector('.posters');
+      const art = document.createElement('article');
+      art.className = 'poster is-user';
+      art.dataset.theme = 'user-' + userCount;
+      art.innerHTML = `
+        <img class="poster-bg" src="${imgUrl}" alt="用户上传的建筑图" />
+        <div class="poster-veil"></div>
+        <div class="poster-grain"></div>
+        <div class="poster-content">
+          <header class="poster-header">
+            <div class="left-side">
+              <span class="track-no">YOUR TRACK ${String(userCount).padStart(2, '0')}</span>
+              <h2 class="poster-title">
+                <span>你的建筑</span><span class="sep">·</span><span class="en">Your Own Piece</span>
+              </h2>
+            </div>
+            <div class="header-tags">
+              <span class="tag">24 sec · ambient</span>
+              <span class="tag live" data-on="false">water idle</span>
+            </div>
+          </header>
+          <div class="poster-mid">
+            <div class="chips">
+              ${words.slice(0, 6).map((w, i) => {
+                if (i === 0) return `<span class="char-group">${w.split('').map(c => `<span class="char-chip">${c}</span>`).join('')}</span>`;
+                return `<span class="chip${i === 2 ? ' hl-dark' : ''}">${w}</span>`;
+              }).join('')}
+            </div>
+            <div class="phrase-line">
+              <span class="char-group"><span class="char-chip">一</span><span class="char-chip xl">张</span><span class="char-chip">图</span><span class="char-chip xxl">的</span><span class="char-chip deep">声</span><span class="char-chip">音</span></span>
+              <span class="comma">,</span>
+            </div>
+            <div class="player">
+              <canvas class="big-wave-canvas"></canvas>
+              <div class="player-row">
+                <button class="play-btn" type="button" aria-label="播放/暂停">
+                  <span class="icon-play"></span><span class="icon-pause"></span>
+                </button>
+                <span class="time current">0:00</span>
+                <div class="wave-progress">
+                  <div class="played"></div>
+                  <div class="playhead"></div>
+                </div>
+                <span class="time total">0:00</span>
+              </div>
+            </div>
+            <audio preload="metadata" src="${audioUrl}"></audio>
+          </div>
+          <footer class="poster-footer">
+            <span class="flow-stamp">FLOW IDLE</span>
+            <div class="outro-chips">
+              <span class="chip">${words[6] || '专属'}</span>
+              <span class="chip">${words[7] || '一张图'}</span>
+            </div>
+          </footer>
+        </div>
+      `;
+      postersSec.appendChild(art);
+      // 初始化这张新海报的播放器 + 曲线渲染 + 贴纸点击
+      initPoster(art);
+      bindChipClicks(art);
+      // 滚动到它
+      setTimeout(() => art.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+    }
+
+    // 抽离出 init 逻辑方便新海报复用
+    function initPoster(poster) {
+      // 避免重复初始化
+      if (poster.dataset.inited === '1') return;
+      poster.dataset.inited = '1';
+      const audio = poster.querySelector('audio');
+      if (!audio || !audioCtx) return;
+
+      const playBtn = poster.querySelector('.play-btn');
+      const timeCur = poster.querySelector('.time.current');
+      const timeTot = poster.querySelector('.time.total');
+      const progWrap = poster.querySelector('.wave-progress');
+      const playedEl = poster.querySelector('.wave-progress .played');
+      const canvas = poster.querySelector('.big-wave-canvas');
+      const cctx = canvas.getContext('2d');
+      const liveTag = poster.querySelector('.tag.live');
+      const stamp = poster.querySelector('.flow-stamp');
+
+      let w = 0, h = 0;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      let curve = null, curveReady = false;
+      let smooth = 0;
+
+      async function loadCurveLocal(src) {
+        try {
+          const resp = await fetch(src);
+          const buf = await resp.arrayBuffer();
+          const decoded = await audioCtx.decodeAudioData(buf.slice(0));
+          const ch = decoded.getChannelData(0);
+          const N = 220;
+          const blockSize = Math.max(1, Math.floor(ch.length / N));
+          const arr = new Array(N);
+          let maxVal = 0;
+          for (let i = 0; i < N; i += 1) {
+            let sum = 0;
+            const s = i * blockSize, e = Math.min(ch.length, s + blockSize);
+            for (let j = s; j < e; j += 1) sum += Math.abs(ch[j]);
+            arr[i] = sum / Math.max(1, e - s);
+            if (arr[i] > maxVal) maxVal = arr[i];
+          }
+          for (let i = 0; i < N; i += 1) arr[i] = Math.pow(maxVal > 0 ? arr[i] / maxVal : 0, 0.75);
+          curve = arr;
+          curveReady = true;
+        } catch (e) {
+          curve = new Array(220).fill(0).map(() => 0.3 + Math.random() * 0.4);
+          curveReady = true;
+        }
+      }
+      loadCurveLocal(audio.getAttribute('src'));
+
+      function resize() {
+        const r = canvas.getBoundingClientRect();
+        w = r.width; h = r.height;
+        canvas.width = Math.max(1, Math.floor(w * dpr));
+        canvas.height = Math.max(1, Math.floor(h * dpr));
+        cctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      let analyser = null, source = null, freqData = null, ready = false;
+      function ensureGraph() {
+        if (!audioCtx || ready) return;
+        try {
+          source = audioCtx.createMediaElementSource(audio);
+          analyser = audioCtx.createAnalyser();
+          analyser.fftSize = 128;
+          analyser.smoothingTimeConstant = 0.84;
+          freqData = new Uint8Array(analyser.frequencyBinCount);
+          source.connect(analyser);
+          analyser.connect(audioCtx.destination);
+          ready = true;
+        } catch (e) { }
+      }
+      function getEnergy() {
+        if (!analyser || !freqData) return 0;
+        analyser.getByteFrequencyData(freqData);
+        let s = 0;
+        for (let i = 0; i < freqData.length; i += 1) s += freqData[i];
+        return (s / freqData.length) / 255;
+      }
+
+      function draw(t) {
+        if (!w || !h) { requestAnimationFrame(draw); return; }
+        cctx.clearRect(0, 0, w, h);
+        const playing = !audio.paused && !audio.ended;
+        const energy = playing ? getEnergy() : 0;
+        smooth = smooth * 0.8 + energy * 0.2;
+        const progress = audio.duration > 0 ? Math.min(1, audio.currentTime / audio.duration) : 0;
+        const midY = h * 0.62;
+        const maxUp = h * 0.78;
+        const phase = t * 0.0012;
+
+        if (!curveReady) {
+          cctx.beginPath(); cctx.moveTo(0, midY); cctx.lineTo(w, midY);
+          cctx.strokeStyle = 'rgba(240, 217, 160, 0.18)'; cctx.lineWidth = 1; cctx.stroke();
+          if (playedEl) playedEl.style.width = (progress * 100).toFixed(2) + '%';
+          requestAnimationFrame(draw); return;
+        }
+
+        const n = curve.length;
+        const progIdx = progress * (n - 1);
+        const pts = new Array(n);
+        for (let i = 0; i < n; i += 1) {
+          const x = (i / (n - 1)) * w;
+          const breathe = playing ? Math.sin(phase * 2 + i * 0.18) * 1.5 : 0;
+          const v = curve[i];
+          const dy = (v - 0.45) * maxUp * 1.2;
+          pts[i] = { x, y: midY - dy + breathe };
+        }
+
+        // 未播放：虚线预告
+        cctx.save();
+        cctx.setLineDash([4, 5]);
+        cctx.strokeStyle = 'rgba(200, 185, 140, 0.28)';
+        cctx.lineWidth = 1; cctx.lineCap = 'round'; cctx.beginPath();
+        const startIdx = Math.max(0, Math.floor(progIdx));
+        for (let i = startIdx; i < n - 1; i += 1) {
+          const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(n - 1, i + 2)];
+          if (i === startIdx) cctx.moveTo(p1.x, p1.y);
+          cctx.bezierCurveTo(p1.x + (p2.x - p0.x) / 6, p1.y + (p2.y - p0.y) / 6, p2.x - (p3.x - p1.x) / 6, p2.y - (p3.y - p1.y) / 6, p2.x, p2.y);
+        }
+        cctx.stroke(); cctx.restore();
+
+        const drawSolid = (lw, color, blur) => {
+          cctx.save();
+          cctx.lineJoin = 'round'; cctx.lineCap = 'round';
+          cctx.strokeStyle = color; cctx.lineWidth = lw;
+          if (blur) { cctx.shadowColor = 'rgba(245, 210, 140, 0.9)'; cctx.shadowBlur = blur; }
+          cctx.beginPath();
+          const endIdx = Math.max(0, Math.min(n - 1, Math.floor(progIdx)));
+          if (endIdx >= 1) {
+            cctx.moveTo(pts[0].x, pts[0].y);
+            for (let i = 0; i < endIdx; i += 1) {
+              const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(n - 1, i + 2)];
+              cctx.bezierCurveTo(p1.x + (p2.x - p0.x) / 6, p1.y + (p2.y - p0.y) / 6, p2.x - (p3.x - p1.x) / 6, p2.y - (p3.y - p1.y) / 6, p2.x, p2.y);
+            }
+          }
+          cctx.stroke(); cctx.restore();
+        };
+        drawSolid(playing ? (7 + smooth * 4) : 5, 'rgba(245, 210, 140, ' + (playing ? (0.28 + smooth * 0.18) : 0.2).toFixed(3) + ')', playing ? (14 + smooth * 12) : 8);
+        drawSolid(playing ? (2 + smooth * 1.2) : 1.8, 'rgba(250, 230, 170, 0.95)', 0);
+
+        // 播放头
+        const endIdx = Math.max(0, Math.min(n - 1, Math.floor(progIdx)));
+        const frac = progIdx - endIdx;
+        const p1 = pts[endIdx], p2 = pts[Math.min(n - 1, endIdx + 1)];
+        const hx = p1.x + (p2.x - p1.x) * frac;
+        const hy = p1.y + (p2.y - p1.y) * frac;
+        if (playing) {
+          const g = cctx.createRadialGradient(hx, hy, 0, hx, hy, 22 + smooth * 14);
+          g.addColorStop(0, 'rgba(255, 235, 180, ' + (0.55 + smooth * 0.3).toFixed(3) + ')');
+          g.addColorStop(1, 'rgba(255, 235, 180, 0)');
+          cctx.fillStyle = g;
+          cctx.beginPath(); cctx.arc(hx, hy, 22 + smooth * 14, 0, Math.PI * 2); cctx.fill();
+        }
+        cctx.beginPath(); cctx.arc(hx, hy, playing ? (5 + smooth * 2) : 4, 0, Math.PI * 2);
+        cctx.fillStyle = '#f5eed8'; cctx.fill();
+        cctx.lineWidth = 1.5; cctx.strokeStyle = 'rgba(20, 20, 20, 0.5)'; cctx.stroke();
+
+        if (playedEl) playedEl.style.width = (progress * 100).toFixed(2) + '%';
+
+        requestAnimationFrame(draw);
+      }
+
+      function fmt(sec) {
+        if (!isFinite(sec) || sec < 0) return '0:00';
+        const m = Math.floor(sec / 60), s = Math.floor(sec % 60);
+        return m + ':' + (s < 10 ? '0' + s : s);
+      }
+      function syncTimes() {
+        timeCur.textContent = fmt(audio.currentTime);
+        timeTot.textContent = fmt(audio.duration);
+      }
+
+      resize();
+      requestAnimationFrame(draw);
+      window.addEventListener('resize', resize);
+
+      audio.addEventListener('loadedmetadata', syncTimes);
+      audio.addEventListener('timeupdate', syncTimes);
+
+      playBtn.addEventListener('click', () => {
+        if (audio.paused) audio.play(); else audio.pause();
+      });
+      progWrap.addEventListener('click', (e) => {
+        if (!audio.duration) return;
+        const r = progWrap.getBoundingClientRect();
+        const ratio = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+        audio.currentTime = ratio * audio.duration;
+      });
+
+      audio.addEventListener('play', async () => {
+        allAudios.forEach((a) => { if (a !== audio) a.pause(); });
+        if (audioCtx) { await audioCtx.resume(); ensureGraph(); }
+        poster.classList.add('is-playing');
+        if (liveTag) { liveTag.dataset.on = 'true'; liveTag.textContent = 'water active'; }
+        if (stamp) stamp.textContent = 'FLOW ACTIVE';
+      });
+      ['pause', 'ended'].forEach((ev) => {
+        audio.addEventListener(ev, () => {
+          poster.classList.remove('is-playing');
+          if (liveTag) { liveTag.dataset.on = 'false'; liveTag.textContent = 'water idle'; }
+          if (stamp) stamp.textContent = 'FLOW IDLE';
+        });
+      });
+
+      // 把新生成的 audio 加入 allAudios（让它和其他 audio 互斥）
+      if (!allAudios.includes(audio)) allAudios.push(audio);
+    }
+  </script>
+</body>
+</html>

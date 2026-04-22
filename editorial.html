@@ -1,0 +1,1032 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>建筑是流动的音乐 · Editorial 书页版</title>
+  <style>
+    :root {
+      --bg: #ece4d0;
+      --paper: #f1e9d4;
+      --paper-warm: #e8ddbe;
+      --ink: #141414;
+      --muted: #706958;
+      --line: rgba(20, 20, 20, 0.16);
+      --line-soft: rgba(20, 20, 20, 0.09);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(120, 95, 40, 0.07), transparent 48%),
+        radial-gradient(circle at 82% 88%, rgba(20, 20, 20, 0.05), transparent 45%),
+        linear-gradient(180deg, #eee5cf 0%, #e4d9bd 100%);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", sans-serif;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* 牛皮纸纹理 */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -10%;
+      pointer-events: none;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          rgba(60, 40, 10, 0.028) 0,
+          rgba(60, 40, 10, 0.028) 1px,
+          transparent 1px,
+          transparent 58px
+        ),
+        repeating-linear-gradient(
+          3deg,
+          rgba(20, 20, 20, 0.015) 0,
+          rgba(20, 20, 20, 0.015) 1px,
+          transparent 1px,
+          transparent 3px
+        );
+      opacity: 0.75;
+      animation: drift 24s linear infinite;
+    }
+
+    @keyframes drift {
+      from { transform: translate3d(0, 0, 0); }
+      to { transform: translate3d(58px, 0, 0); }
+    }
+
+    .page {
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 52px 28px 80px;
+    }
+
+    /* —— 顶部书页式封面 —— */
+    .cover {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 32px;
+      align-items: end;
+      padding: 24px 0 36px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 48px;
+    }
+
+    .cover-left .eyebrow {
+      font-family: "SF Mono", "Menlo", monospace;
+      font-size: 12px;
+      letter-spacing: 0.22em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      padding: 3px 10px;
+      background: var(--paper-warm);
+      display: inline-block;
+      transform: rotate(-0.5deg);
+    }
+
+    .cover h1 {
+      font-family: "Songti SC", "Noto Serif SC", Georgia, serif;
+      font-size: clamp(42px, 6vw, 76px);
+      line-height: 1.02;
+      margin: 0 0 14px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: #0f0f0f;
+    }
+
+    .cover .subtitle {
+      font-family: Georgia, "Songti SC", serif;
+      font-style: italic;
+      font-size: 22px;
+      color: #2b2b2b;
+      letter-spacing: 0.02em;
+    }
+
+    .cover-right {
+      font-family: "Songti SC", "Noto Serif SC", Georgia, serif;
+      font-size: 15.5px;
+      line-height: 1.9;
+      color: #2b2b2b;
+      max-width: 520px;
+      padding-bottom: 10px;
+    }
+
+    .cover-right em {
+      font-style: normal;
+      background: var(--paper-warm);
+      padding: 0 4px;
+    }
+
+    /* —— Track 卡：书页留白版 —— */
+    .tracks {
+      display: grid;
+      gap: 64px;
+    }
+
+    .track {
+      position: relative;
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 0;
+      background:
+        linear-gradient(180deg, rgba(241, 233, 212, 0.6), rgba(232, 221, 190, 0.35));
+      border: 1px solid var(--line);
+      box-shadow:
+        0 1px 0 rgba(255, 252, 244, 0.7) inset,
+        0 18px 38px rgba(60, 40, 10, 0.08),
+        0 3px 8px rgba(60, 40, 10, 0.05);
+      overflow: visible;
+    }
+
+    /* 左侧建筑图：保持竖幅 demo 比例 */
+    .track-photo {
+      position: relative;
+      min-height: 640px;
+      overflow: hidden;
+      background: #d9d0b9;
+      border-right: 1px solid var(--line);
+    }
+
+    .track-photo img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(1) contrast(1.04) brightness(0.95);
+      opacity: 0.96;
+      transition: opacity .6s ease, filter .6s ease, transform .8s ease;
+    }
+
+    .track.is-playing .track-photo img {
+      opacity: 1;
+      filter: grayscale(0.82) contrast(1.08) brightness(1);
+      transform: scale(1.015);
+    }
+
+    /* 左下角 FLOW IDLE 手写标签 */
+    .flow-stamp {
+      position: absolute;
+      left: 12px;
+      bottom: 12px;
+      font-family: "SF Mono", "Menlo", monospace;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      color: rgba(255, 252, 244, 0.85);
+      text-transform: uppercase;
+      background: rgba(20, 20, 20, 0.4);
+      padding: 3px 8px;
+      backdrop-filter: blur(4px);
+      transform: rotate(-1.5deg);
+      transition: background .3s ease, color .3s ease;
+    }
+
+    .track.is-playing .flow-stamp {
+      background: rgba(20, 20, 20, 0.85);
+      color: #fff;
+    }
+
+    .flow-stamp::before {
+      content: "◉ ";
+      color: currentColor;
+    }
+
+    /* —— 右侧书页内容 —— */
+    .track-body {
+      padding: 36px 44px 36px 40px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* 右上角胶带装饰 */
+    .track-body::before {
+      content: "";
+      position: absolute;
+      top: -12px;
+      right: 54px;
+      width: 86px;
+      height: 22px;
+      background: rgba(215, 207, 187, 0.82);
+      border-left: 1px dashed rgba(120, 100, 60, 0.35);
+      border-right: 1px dashed rgba(120, 100, 60, 0.35);
+      transform: rotate(-5deg);
+      box-shadow: 0 3px 6px rgba(60, 40, 10, 0.08);
+      pointer-events: none;
+    }
+
+    /* Track 编号 + 标题行 */
+    .track-meta {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .track-no {
+      display: inline-block;
+      font-family: "SF Mono", "Menlo", monospace;
+      font-size: 12px;
+      letter-spacing: 0.22em;
+      color: #3a2f1c;
+      background: var(--paper-warm);
+      padding: 4px 12px 3px;
+      transform: rotate(-1deg);
+      box-shadow: 0 2px 4px rgba(60, 40, 10, 0.08);
+    }
+
+    .track-tags {
+      display: flex;
+      gap: 8px;
+      margin-left: auto;
+      flex-wrap: wrap;
+    }
+
+    .track-tags .tag {
+      font-family: "SF Mono", "Menlo", monospace;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #3a2f1c;
+      background: #e5dabc;
+      padding: 3px 10px;
+      border: 1px solid rgba(60, 40, 10, 0.16);
+    }
+
+    .track-tags .tag.live[data-on="true"] {
+      background: #141414;
+      color: #f5efe0;
+      border-color: #141414;
+    }
+
+    .track-title {
+      margin: 0;
+      font-size: 36px;
+      line-height: 1.1;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #111;
+      display: inline-block;
+      position: relative;
+    }
+
+    .track-title .cn {
+      background: var(--paper-warm);
+      padding: 2px 10px;
+      margin-right: 4px;
+      box-shadow: 0 3px 7px rgba(60, 40, 10, 0.1);
+      display: inline-block;
+      transform: rotate(-0.8deg);
+    }
+
+    .track-title .sep {
+      color: #3a2f1c;
+      font-weight: 400;
+      padding: 0 6px;
+    }
+
+    .track-title .en {
+      font-family: Georgia, "Inter", serif;
+      font-weight: 600;
+      font-size: 28px;
+      color: #1a1a1a;
+      letter-spacing: -0.005em;
+    }
+
+    /* —— 关键词小号米黄行 —— */
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 12px;
+      padding: 2px 0;
+    }
+
+    .chips .chip {
+      font-family: "Songti SC", "Noto Serif SC", Georgia, serif;
+      font-size: 19px;
+      font-weight: 600;
+      color: #141414;
+      background: var(--paper-warm);
+      padding: 3px 11px;
+      box-shadow: 0 2px 5px rgba(60, 40, 10, 0.09);
+      transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease;
+      will-change: transform;
+      animation: chipFloat 7s ease-in-out infinite;
+      --rot: -1.2deg;
+      transform: rotate(var(--rot));
+      cursor: default;
+    }
+
+    /* 交错的基础角度 */
+    .chips .chip:nth-child(2n) { --rot: 1.4deg; background: #e3d9bc; }
+    .chips .chip:nth-child(3n) { --rot: -2deg; background: #e8ddbe; }
+    .chips .chip:nth-child(4n) { --rot: 1deg; }
+
+    /* 延迟错开 */
+    .chips .chip:nth-child(1) { animation-delay: 0s; }
+    .chips .chip:nth-child(2) { animation-delay: .7s; }
+    .chips .chip:nth-child(3) { animation-delay: 1.4s; }
+    .chips .chip:nth-child(4) { animation-delay: 2.1s; }
+    .chips .chip:nth-child(5) { animation-delay: 2.8s; }
+    .chips .chip:nth-child(6) { animation-delay: 3.5s; }
+    .chips .chip:nth-child(7) { animation-delay: 4.2s; }
+    .chips .chip:nth-child(8) { animation-delay: 4.9s; }
+
+    @keyframes chipFloat {
+      0%, 100% { transform: translateY(0) rotate(var(--rot)); }
+      50% { transform: translateY(-2px) rotate(calc(var(--rot) + 0.6deg)); }
+    }
+
+    .chips .chip:hover {
+      transform: translateY(-4px) rotate(var(--rot)) scale(1.08) !important;
+      animation-play-state: paused;
+      box-shadow: 0 8px 16px rgba(60, 40, 10, 0.16) !important;
+    }
+
+    /* 强调型关键词 */
+    .chips .chip.hl-dark {
+      background: #141414;
+      color: #f5efe0;
+      box-shadow: 0 3px 7px rgba(0, 0, 0, 0.2);
+    }
+
+    .chips .chip.hl-italic {
+      background: transparent;
+      box-shadow: none;
+      font-family: Georgia, "Songti SC", serif;
+      font-style: italic;
+      font-weight: 500;
+      padding: 2px 4px;
+      border-bottom: 1px solid rgba(20, 20, 20, 0.4);
+      color: #2b2b2b;
+    }
+
+    .chips .chip.hl-italic:hover {
+      box-shadow: 0 4px 8px rgba(60, 40, 10, 0.08) !important;
+    }
+
+    /* 次级小号行 */
+    .chips.small .chip {
+      font-size: 15px;
+      padding: 2px 9px;
+    }
+
+    /* —— 大字短语：像 demo 里"回声中的水 ," —— */
+    .line-headline {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      padding: 16px 0 8px;
+    }
+
+    .line-headline .phrase {
+      font-family: "Songti SC", "Noto Serif SC", Georgia, serif;
+      font-size: 44px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: #0f0f0f;
+      background: var(--paper-warm);
+      padding: 4px 16px 6px;
+      box-shadow: 0 4px 9px rgba(60, 40, 10, 0.12);
+      transform: rotate(-0.8deg);
+      line-height: 1;
+    }
+
+    .line-headline .comma {
+      font-family: Georgia, serif;
+      font-size: 64px;
+      color: #2b2b2b;
+      transform: translateY(10px) rotate(3deg);
+      padding-left: 4px;
+    }
+
+    /* —— 正文长段 —— */
+    .narrative {
+      font-family: -apple-system, "PingFang SC", sans-serif;
+      font-size: 15px;
+      line-height: 1.9;
+      color: #2b2b2b;
+      max-width: 640px;
+    }
+
+    /* —— 播放器：极简细线水平波形 —— */
+    .player {
+      position: relative;
+      margin: 10px 0 4px;
+      padding: 14px 0 8px;
+    }
+
+    .player-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+    }
+
+    .play-btn {
+      width: 40px;
+      height: 40px;
+      border: 1px solid rgba(20, 20, 20, 0.6);
+      background: rgba(255, 252, 244, 0.4);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
+      flex-shrink: 0;
+      transition: background .25s ease, transform .2s ease;
+      box-shadow: 0 2px 5px rgba(60, 40, 10, 0.1);
+    }
+
+    .play-btn:hover { background: rgba(255, 252, 244, 0.9); }
+    .play-btn:active { transform: scale(0.94); }
+
+    .play-btn .icon-play,
+    .play-btn .icon-pause {
+      display: block;
+      width: 0;
+      height: 0;
+    }
+
+    .play-btn .icon-play {
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+      border-left: 9px solid #141414;
+      margin-left: 2px;
+    }
+
+    .play-btn .icon-pause {
+      width: 9px;
+      height: 12px;
+      border-left: 3px solid #141414;
+      border-right: 3px solid #141414;
+    }
+
+    .track.is-playing .play-btn .icon-play { display: none; }
+    .track:not(.is-playing) .play-btn .icon-pause { display: none; }
+
+    .time {
+      font-family: "SF Mono", "Menlo", monospace;
+      font-size: 12px;
+      color: #2b2b2b;
+      min-width: 38px;
+      text-align: center;
+    }
+
+    .time.total { color: #6f6a5c; }
+
+    .wave {
+      position: relative;
+      flex: 1;
+      height: 36px;
+      cursor: pointer;
+    }
+
+    .wave canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* —— 为什么是这段声音 —— */
+    .why {
+      position: relative;
+      margin-top: 8px;
+      padding: 22px 22px 20px;
+      border: 1px solid rgba(20, 20, 20, 0.12);
+      background:
+        linear-gradient(180deg, rgba(255, 252, 244, 0.55), rgba(241, 233, 212, 0.4));
+      font-family: "Songti SC", "Noto Serif SC", Georgia, serif;
+      font-size: 15px;
+      line-height: 1.95;
+      color: #2b2b2b;
+    }
+
+    .why::before {
+      content: "为什么是这段声音";
+      position: absolute;
+      top: -11px;
+      left: 18px;
+      font-family: -apple-system, "PingFang SC", sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      color: #3a2f1c;
+      background: var(--paper-warm);
+      padding: 3px 10px;
+      transform: rotate(-1deg);
+      box-shadow: 0 2px 4px rgba(60, 40, 10, 0.08);
+    }
+
+    .why em {
+      font-style: normal;
+      color: #0f0f0f;
+      background: rgba(232, 221, 190, 0.9);
+      padding: 0 4px;
+    }
+
+    /* —— 右下角收束关键词 —— */
+    .outro-chips {
+      display: flex;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 8px 10px;
+      padding-top: 6px;
+    }
+
+    .outro-chips .chip { font-size: 15px; }
+
+    /* —— 页脚 —— */
+    .foot {
+      margin-top: 64px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+      font-family: Georgia, "Songti SC", serif;
+      font-style: italic;
+      font-size: 13.5px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .foot a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid currentColor;
+    }
+
+    @media (max-width: 980px) {
+      .cover { grid-template-columns: 1fr; }
+      .track { grid-template-columns: 1fr; }
+      .track-photo { min-height: 320px; border-right: none; border-bottom: 1px solid var(--line); }
+      .track-body { padding: 28px 22px; }
+      .track-title { font-size: 28px; }
+      .track-title .en { font-size: 22px; }
+      .line-headline .phrase { font-size: 32px; }
+      .line-headline .comma { font-size: 46px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <!-- ============ 封面 ============ -->
+    <section class="cover">
+      <div class="cover-left">
+        <div class="eyebrow">Architecture × Sound · Editorial</div>
+        <h1>建筑是流动的音乐</h1>
+        <div class="subtitle">An editorial listening booklet</div>
+      </div>
+      <div class="cover-right">
+        四栋建筑，四段声音。<br/>
+        这不是一张专辑，更像一本<em>小册子</em>——每一页都有一张照片、一些被剪下来的词、一段为它而写的配乐。<br/>
+        请慢一点读，<em>让每段声音走完它自己的那条路</em>。
+      </div>
+    </section>
+
+    <section class="tracks">
+
+      <!-- ============ TRACK 01 ============ -->
+      <article class="track" data-theme="pei">
+        <div class="track-photo">
+          <img src="./images/01-pei.jpg" alt="贝聿铭风格几何建筑原图" />
+          <div class="flow-stamp">FLOW IDLE</div>
+        </div>
+        <div class="track-body">
+          <div class="track-meta">
+            <span class="track-no">TRACK 01</span>
+            <div class="track-tags">
+              <span class="tag">24 sec · minimal</span>
+              <span class="tag live" data-on="false">water idle</span>
+            </div>
+          </div>
+          <h2 class="track-title">
+            <span class="cn">几何白墙</span><span class="sep">·</span><span class="en">Geometric Minimal</span>
+          </h2>
+          <div class="chips">
+            <span class="chip">折线</span>
+            <span class="chip">秩序</span>
+            <span class="chip hl-italic">镜像</span>
+            <span class="chip hl-dark">留白</span>
+            <span class="chip">屏息</span>
+            <span class="chip hl-italic">对称</span>
+            <span class="chip">低光</span>
+          </div>
+          <div class="chips small">
+            <span class="chip">平直细波</span>
+            <span class="chip">低振幅</span>
+            <span class="chip">规则扩散</span>
+          </div>
+          <div class="line-headline">
+            <span class="phrase">白墙上的反光</span>
+            <span class="comma">,</span>
+          </div>
+          <p class="narrative">
+            这里的水纹应该像白墙上的反光，不要太"水"。我让它只在播放时微微抬起，用更平整的流线和更慢的扩散节奏，去强调一栋建筑里那种"刚刚好"的几何秩序感。
+          </p>
+          <div class="player">
+            <div class="player-row">
+              <button class="play-btn" type="button" aria-label="播放/暂停">
+                <span class="icon-play"></span><span class="icon-pause"></span>
+              </button>
+              <span class="time current">0:00</span>
+              <div class="wave"><canvas class="wave-canvas"></canvas></div>
+              <span class="time total">0:00</span>
+            </div>
+          </div>
+          <audio preload="metadata" src="./output/01-pei-geometric-minimal.wav"></audio>
+          <div class="outro-chips">
+            <span class="chip">清晨的墙</span>
+            <span class="chip hl-italic">空气</span>
+            <span class="chip">光影斜切</span>
+          </div>
+          <div class="why">
+            它太干净了，干净到你不敢大声说话。于是我没有让音乐"响起来"，而是让它像一束光斜斜地落在墙上——只有几个点，剩下全是<em>空气</em>。波纹平得像镜面，不是因为安静，是因为这栋建筑<em>本来就在屏息</em>。
+          </div>
+        </div>
+      </article>
+
+      <!-- ============ TRACK 02 ============ -->
+      <article class="track" data-theme="mondrian">
+        <div class="track-photo">
+          <img src="./images/02-mondrian.jpg" alt="蒙德里安风格几何色彩建筑原图" />
+          <div class="flow-stamp">FLOW IDLE</div>
+        </div>
+        <div class="track-body">
+          <div class="track-meta">
+            <span class="track-no">TRACK 02</span>
+            <div class="track-tags">
+              <span class="tag">22 sec · rhythmic</span>
+              <span class="tag live" data-on="false">water idle</span>
+            </div>
+          </div>
+          <h2 class="track-title">
+            <span class="cn">色块网格</span><span class="sep">·</span><span class="en">Urban Grid Pulse</span>
+          </h2>
+          <div class="chips">
+            <span class="chip">网格</span>
+            <span class="chip hl-dark">色块</span>
+            <span class="chip hl-italic">街头</span>
+            <span class="chip">切分</span>
+            <span class="chip">脉冲</span>
+            <span class="chip">霓虹</span>
+            <span class="chip hl-italic">交错</span>
+          </div>
+          <div class="chips small">
+            <span class="chip">密波</span>
+            <span class="chip">更频繁涟漪</span>
+            <span class="chip">城市节奏</span>
+          </div>
+          <div class="line-headline">
+            <span class="phrase">被切开的街头节拍</span>
+            <span class="comma">,</span>
+          </div>
+          <p class="narrative">
+            这类建筑不适合柔软的水面，更像被街道、窗格和节拍切开的脉冲流体。所以我让水纹更密、更快，涟漪触发也更频繁，像城市路口的节奏回声——你会听见它，然后才想起它是一栋楼。
+          </p>
+          <div class="player">
+            <div class="player-row">
+              <button class="play-btn" type="button" aria-label="播放/暂停">
+                <span class="icon-play"></span><span class="icon-pause"></span>
+              </button>
+              <span class="time current">0:00</span>
+              <div class="wave"><canvas class="wave-canvas"></canvas></div>
+              <span class="time total">0:00</span>
+            </div>
+          </div>
+          <audio preload="metadata" src="./output/02-mondrian-urban-grid.wav"></audio>
+          <div class="outro-chips">
+            <span class="chip">下午四点</span>
+            <span class="chip hl-italic">路口</span>
+            <span class="chip">都市心跳</span>
+          </div>
+          <div class="why">
+            它不是一栋建筑，它是<em>一段被切开的街头节拍</em>。红黄蓝堆在一起，像某个下午四点钟的路口——有人在按喇叭，有人在过马路，有人在抬头看这面突然跳出来的墙。所以我让音乐变密、变碎、变快，像心跳，也像都市里那种<em>藏不住的兴奋</em>。
+          </div>
+        </div>
+      </article>
+
+      <!-- ============ TRACK 03 ============ -->
+      <article class="track" data-theme="aranya">
+        <div class="track-photo">
+          <img src="./images/03-aranya.jpg" alt="阿那亚礼堂清晨原图" />
+          <div class="flow-stamp">FLOW IDLE</div>
+        </div>
+        <div class="track-body">
+          <div class="track-meta">
+            <span class="track-no">TRACK 03</span>
+            <div class="track-tags">
+              <span class="tag">28 sec · ambient</span>
+              <span class="tag live" data-on="false">water idle</span>
+            </div>
+          </div>
+          <h2 class="track-title">
+            <span class="cn">黎明礼堂</span><span class="sep">·</span><span class="en">Dawn Chapel Ambient</span>
+          </h2>
+          <div class="chips">
+            <span class="chip">尖顶</span>
+            <span class="chip">台阶</span>
+            <span class="chip hl-italic">海边</span>
+            <span class="chip hl-dark">孤独</span>
+            <span class="chip">浪漫</span>
+            <span class="chip hl-italic">晨雾</span>
+            <span class="chip">钟声</span>
+          </div>
+          <div class="chips small">
+            <span class="chip">慢波</span>
+            <span class="chip">长尾回响</span>
+            <span class="chip">大范围扩散</span>
+          </div>
+          <div class="line-headline">
+            <span class="phrase">回声中的水</span>
+            <span class="comma">,</span>
+          </div>
+          <p class="narrative">
+            这段最适合做成"回声中的水"。播放时，水流并不快，但每一层波线都更深、更长，像钟声在晨雾和海风里慢慢散开——你甚至可以数得清它被推到多远又飘回来。
+          </p>
+          <div class="player">
+            <div class="player-row">
+              <button class="play-btn" type="button" aria-label="播放/暂停">
+                <span class="icon-play"></span><span class="icon-pause"></span>
+              </button>
+              <span class="time current">0:00</span>
+              <div class="wave"><canvas class="wave-canvas"></canvas></div>
+              <span class="time total">0:00</span>
+            </div>
+          </div>
+          <audio preload="metadata" src="./output/03-aranya-dawn-chapel.wav"></audio>
+          <div class="outro-chips">
+            <span class="chip">清晨五点</span>
+            <span class="chip hl-italic">留白</span>
+            <span class="chip hl-italic">上行</span>
+            <span class="chip">回响空间</span>
+          </div>
+          <div class="why">
+            清晨五点的海边，连风都是慢的。礼堂的尖顶往上走，像在替还没醒来的人<em>先问一句天</em>。所以这段声音我不敢写得太满——留很多空，让每一个音走出去以后再走回来，像一个人独自站在台阶上，听见<em>自己的回声</em>，然后意识到海在更远的地方。
+          </div>
+        </div>
+      </article>
+
+      <!-- ============ TRACK 04 ============ -->
+      <article class="track" data-theme="mad">
+        <div class="track-photo">
+          <img src="./images/04-mad.jpg" alt="MAD 有机曲面建筑鸟瞰原图" />
+          <div class="flow-stamp">FLOW IDLE</div>
+        </div>
+        <div class="track-body">
+          <div class="track-meta">
+            <span class="track-no">TRACK 04</span>
+            <div class="track-tags">
+              <span class="tag">32 sec · organic</span>
+              <span class="tag live" data-on="false">water idle</span>
+            </div>
+          </div>
+          <h2 class="track-title">
+            <span class="cn">有机曲面</span><span class="sep">·</span><span class="en">Organic Flow</span>
+          </h2>
+          <div class="chips">
+            <span class="chip">伞盖</span>
+            <span class="chip hl-italic">生长</span>
+            <span class="chip">放射</span>
+            <span class="chip hl-dark">呼吸</span>
+            <span class="chip">鸟瞰</span>
+            <span class="chip hl-italic">无直角</span>
+            <span class="chip">慢绽放</span>
+          </div>
+          <div class="chips small">
+            <span class="chip">极慢呼吸</span>
+            <span class="chip">向外绽放</span>
+            <span class="chip">长尾漂浮</span>
+          </div>
+          <div class="line-headline">
+            <span class="phrase">正在打开的手</span>
+            <span class="comma">,</span>
+          </div>
+          <p class="narrative">
+            这是一栋"没有直角"的建筑。音乐里也没有切分节奏，只有一个持续的中央主音，像建筑的粗柱；其他音符从它身上向外辐射、扩散，像一把伞在鸟瞰里慢慢打开。
+          </p>
+          <div class="player">
+            <div class="player-row">
+              <button class="play-btn" type="button" aria-label="播放/暂停">
+                <span class="icon-play"></span><span class="icon-pause"></span>
+              </button>
+              <span class="time current">0:00</span>
+              <div class="wave"><canvas class="wave-canvas"></canvas></div>
+              <span class="time total">0:00</span>
+            </div>
+          </div>
+          <audio preload="metadata" src="./output/04-mad-organic-flow.wav"></audio>
+          <div class="outro-chips">
+            <span class="chip">一次打开</span>
+            <span class="chip hl-italic">远处</span>
+            <span class="chip">呼吸变慢</span>
+            <span class="chip hl-italic">骨头</span>
+          </div>
+          <div class="why">
+            你从高空往下看这栋楼，它不像一个建筑，更像一只<em>正在慢慢张开的手</em>。所以这段声音我没写旋律，只写了一次"打开"——中间有一根音一直不走，像建筑的骨头；其他音从它身上一点点冒出来，去到远处，又被风慢慢送回。你会发现自己的呼吸也变慢了，那是<em>它替你做的事</em>。
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+    <footer class="foot">
+      <span>建筑 × 声音 · editorial edition</span>
+      <span>另见 <a href="./poster.html">poster 海报版</a> · <a href="./index.html">collage 拼贴版</a> · <a href="./original.html">original 最初版</a> · 2026</span>
+    </footer>
+  </main>
+
+  <script>
+    const AC = window.AudioContext || window.webkitAudioContext;
+    const audioCtx = AC ? new AC() : null;
+    const allAudios = [...document.querySelectorAll('audio')];
+
+    document.querySelectorAll('.track').forEach((track) => {
+      const audio = track.querySelector('audio');
+      const playBtn = track.querySelector('.play-btn');
+      const timeCur = track.querySelector('.time.current');
+      const timeTot = track.querySelector('.time.total');
+      const waveWrap = track.querySelector('.wave');
+      const canvas = track.querySelector('.wave-canvas');
+      const cctx = canvas.getContext('2d');
+      const liveTag = track.querySelector('.tag.live');
+      const stamp = track.querySelector('.flow-stamp');
+
+      let w = 0, h = 0;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+      // 预生成波形骨架：184 根短齿，每个 track 用 theme 做 seed
+      const bars = (() => {
+        const arr = [];
+        const n = 184;
+        let seed = (track.dataset.theme || 'x').split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+        const r = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+        for (let i = 0; i < n; i += 1) {
+          const p = i / (n - 1);
+          const envelope = Math.pow(Math.sin(p * Math.PI), 0.5);
+          arr.push({
+            up: envelope * (0.4 + r() * 0.9),
+            dn: envelope * (0.2 + r() * 0.5),
+          });
+        }
+        return arr;
+      })();
+
+      function resize() {
+        const r = waveWrap.getBoundingClientRect();
+        w = r.width;
+        h = r.height;
+        canvas.width = Math.max(1, Math.floor(w * dpr));
+        canvas.height = Math.max(1, Math.floor(h * dpr));
+        cctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      let analyser = null, source = null, freqData = null, ready = false;
+      function ensureGraph() {
+        if (!audioCtx || ready) return;
+        try {
+          source = audioCtx.createMediaElementSource(audio);
+          analyser = audioCtx.createAnalyser();
+          analyser.fftSize = 128;
+          analyser.smoothingTimeConstant = 0.85;
+          freqData = new Uint8Array(analyser.frequencyBinCount);
+          source.connect(analyser);
+          analyser.connect(audioCtx.destination);
+          ready = true;
+        } catch (e) { /* 已经连过了 */ }
+      }
+
+      function getEnergy() {
+        if (!analyser || !freqData) return 0;
+        analyser.getByteFrequencyData(freqData);
+        let s = 0;
+        for (let i = 0; i < freqData.length; i += 1) s += freqData[i];
+        return (s / freqData.length) / 255;
+      }
+
+      let smooth = 0;
+
+      function draw(t) {
+        if (!w || !h) { requestAnimationFrame(draw); return; }
+        cctx.clearRect(0, 0, w, h);
+        const playing = !audio.paused && !audio.ended;
+        const energy = playing ? getEnergy() : 0;
+        smooth = smooth * 0.82 + energy * 0.18;
+
+        const progress = audio.duration > 0 ? Math.min(1, audio.currentTime / audio.duration) : 0;
+        const midY = h * 0.55;
+        const maxUp = h * 0.52;
+        const maxDn = h * 0.28;
+        const globalAmp = playing ? (0.45 + smooth * 1.3) : 0.32;
+        const phase = t * 0.002;
+
+        const n = bars.length;
+        const bw = w / n;
+
+        // 水平基线（整条）
+        cctx.beginPath();
+        cctx.moveTo(0, midY);
+        cctx.lineTo(w, midY);
+        cctx.strokeStyle = 'rgba(20, 20, 20, 0.18)';
+        cctx.lineWidth = 1;
+        cctx.stroke();
+
+        // 每根齿
+        for (let i = 0; i < n; i += 1) {
+          const b = bars[i];
+          const x = i * bw + bw * 0.5;
+          const played = (i + 0.5) / n <= progress;
+          const breathe = Math.sin(phase + i * 0.11) * 0.2 + 1;
+          const wobble = playing ? Math.sin(phase * 3 + i * 0.4) * 0.15 : 0;
+          const up = b.up * (globalAmp + wobble) * maxUp * breathe;
+          const dn = b.dn * (globalAmp + wobble) * maxDn * breathe;
+
+          cctx.beginPath();
+          cctx.moveTo(x, midY - up);
+          cctx.lineTo(x, midY + dn);
+          cctx.strokeStyle = played
+            ? 'rgba(20, 20, 20, 0.88)'
+            : 'rgba(20, 20, 20, 0.22)';
+          cctx.lineWidth = 1;
+          cctx.stroke();
+        }
+
+        // playhead 圆点
+        if (audio.duration > 0) {
+          const cx = progress * w;
+          cctx.beginPath();
+          cctx.arc(cx, midY, playing ? 4.5 : 3.5, 0, Math.PI * 2);
+          cctx.fillStyle = '#141414';
+          cctx.fill();
+          if (playing) {
+            cctx.beginPath();
+            cctx.arc(cx, midY, 8 + smooth * 6, 0, Math.PI * 2);
+            cctx.strokeStyle = 'rgba(20, 20, 20, ' + (0.18 + smooth * 0.22).toFixed(3) + ')';
+            cctx.lineWidth = 1;
+            cctx.stroke();
+          }
+        }
+
+        requestAnimationFrame(draw);
+      }
+
+      function fmt(sec) {
+        if (!isFinite(sec) || sec < 0) return '0:00';
+        const m = Math.floor(sec / 60);
+        const s = Math.floor(sec % 60);
+        return m + ':' + (s < 10 ? '0' + s : s);
+      }
+      function syncTimes() {
+        timeCur.textContent = fmt(audio.currentTime);
+        timeTot.textContent = fmt(audio.duration);
+      }
+
+      resize();
+      requestAnimationFrame(draw);
+      window.addEventListener('resize', resize);
+
+      audio.addEventListener('loadedmetadata', syncTimes);
+      audio.addEventListener('timeupdate', syncTimes);
+
+      playBtn.addEventListener('click', () => {
+        if (audio.paused) audio.play();
+        else audio.pause();
+      });
+
+      waveWrap.addEventListener('click', (e) => {
+        if (!audio.duration) return;
+        const r = waveWrap.getBoundingClientRect();
+        const ratio = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+        audio.currentTime = ratio * audio.duration;
+      });
+
+      audio.addEventListener('play', async () => {
+        allAudios.forEach((a) => { if (a !== audio) a.pause(); });
+        if (audioCtx) { await audioCtx.resume(); ensureGraph(); }
+        track.classList.add('is-playing');
+        if (liveTag) { liveTag.dataset.on = 'true'; liveTag.textContent = 'water active'; }
+        if (stamp) stamp.textContent = 'FLOW ACTIVE';
+      });
+
+      ['pause', 'ended'].forEach((ev) => {
+        audio.addEventListener(ev, () => {
+          track.classList.remove('is-playing');
+          if (liveTag) { liveTag.dataset.on = 'false'; liveTag.textContent = 'water idle'; }
+          if (stamp) stamp.textContent = 'FLOW IDLE';
+        });
+      });
+    });
+  </script>
+</body>
+</html>
